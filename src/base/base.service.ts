@@ -1,67 +1,47 @@
 import { BadGatewayException, Injectable } from '@nestjs/common';
 import { IBaseService } from './Ibase.service';
-import { BaseEntity } from './base.model';
+import { Model, Document } from 'mongoose';
 
 @Injectable()
-export class BaseService<T extends BaseEntity> implements IBaseService<T> {
-  constructor(private readonly _model) {}
+export class BaseService<T extends Document> implements IBaseService<T> {
+  constructor(private readonly _model: Model<T>) {}
 
-  create(entity: any): Promise<string> {
+  async create(doc: T): Promise<T> {
     try {
-      return new Promise<string>((resolve, reject) => {
-        this._model
-          .save(entity)
-          .then(created => resolve(created.id))
-          .catch(err => reject(err));
-      });
+      const newDoc = new this._model(doc);
+      return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
-  getAll(): Promise<T[]> {
+  async getAll(): Promise<T[]> {
     try {
-      return <Promise<T[]>>this._model.find();
+      return await this._model.find();
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
-  get(id: string): Promise<T> {
+  async get(id: string): Promise<T> {
     try {
     } catch (error) {
       throw new BadGatewayException(error);
     }
-    return <Promise<T>>this._model.findOneById(id);
+    return await this._model.findById(id);
   }
 
-  delete(id: string): void {
+  async delete(id: string): Promise<void> {
     try {
-      this._model.deleteById(id);
+      await this._model.findByIdAndDelete(id);
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
-  update(entity: any): Promise<any> {
+  async update(id: string, doc: T): Promise<T> {
     try {
-      return new Promise<any>((resolve, reject) => {
-        this._model
-          .findOneById(entity.id)
-          .then(responseGet => {
-            try {
-              if (responseGet == null) reject('Not existing');
-              const retrievedEntity: any = responseGet as any;
-              this._model
-                .save(retrievedEntity)
-                .then(response => resolve(response))
-                .catch(err => reject(err));
-            } catch (e) {
-              reject(e);
-            }
-          })
-          .catch(err => reject(err));
-      });
+      return await this._model.findByIdAndUpdate(id, doc);
     } catch (error) {
       throw new BadGatewayException(error);
     }

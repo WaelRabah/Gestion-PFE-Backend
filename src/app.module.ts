@@ -11,7 +11,8 @@ import { SoutenancesModule } from './soutenances/soutenances.module';
 import { AnneeUniversitairesModule } from './annee-universitaires/annee-universitaires.module';
 import { SuggestPfeModule } from './suggest-pfe/suggest-pfe.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URI, { useFindAndModify: false }),

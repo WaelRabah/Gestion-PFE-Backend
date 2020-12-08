@@ -8,6 +8,7 @@ export class SuggestPfeModel extends Document {
   public description: string;
   @Prop({ type: String, required: true })
   public entreprise: string;
+
   @Prop({ type: String, required: true })
   public file: string;
   @Prop({ type: String, required: true })

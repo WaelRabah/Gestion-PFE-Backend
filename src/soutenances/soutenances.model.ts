@@ -3,8 +3,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 @Schema()
 export class SoutenancesModel extends Document {
-  @Prop()
-  public id: string;
   @Prop({ type: Types.ObjectId, required: true })
   public encadrantId: string;
   @Prop({ type: String, required: true })
@@ -13,7 +11,7 @@ export class SoutenancesModel extends Document {
   public presidentId: string;
   @Prop({ type: Types.ObjectId, required: true })
   public rapporteurId: string;
-  @Prop({ type: String, required: true })
-  public type: string;
+  @Prop({ type: Boolean, required: true })
+  public type: boolean;
 }
 export const SoutenancesSchema = SchemaFactory.createForClass(SoutenancesModel);

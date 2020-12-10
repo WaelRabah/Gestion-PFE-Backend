@@ -1,10 +1,8 @@
-import { EtudiantsModule } from './etudiants/etudiants.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EnseignantsModule } from './enseignants/enseignants.module';
-import { AdministrateursModule } from './administrateurs/administrateurs.module';
+
 import { PfesModule } from './pfes/pfes.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { SoutenancesModule } from './soutenances/soutenances.module';
@@ -16,9 +14,6 @@ dotenv.config();
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URI, { useFindAndModify: false }),
-    EnseignantsModule,
-    EtudiantsModule,
-    AdministrateursModule,
     PfesModule,
     SessionsModule,
     SoutenancesModule,

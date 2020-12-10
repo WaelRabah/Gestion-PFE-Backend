@@ -1,14 +1,60 @@
-import { ApiTags } from '@nestjs/swagger';
-import { UtilisateursService } from './utilisateurs.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
-import { Controller } from '@nestjs/common';
-import { BaseController } from 'src/base/base.controller';
+import { UtilisateursService } from './utilisateurs.service';
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
-export class UtilisateursController<
-  T extends UtilisateursModel
-> extends BaseController<T> {
-  constructor(private readonly __service: UtilisateursService<T>) {
-    super(__service);
+export class UtilisateursController {
+  constructor(private readonly _service: UtilisateursService) {}
+  @Get()
+  @ApiResponse({ status: 200, description: 'Ok' })
+  async findAll(): Promise<UtilisateursModel[]> {
+    return await this._service.getAll();
+  }
+
+  @Get(':id')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async findById(@Param('id') id: string): Promise<UtilisateursModel> {
+    return await this._service.get(id);
+  }
+
+  @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: UtilisateursModel })
+  async create(@Body() doc: UtilisateursModel): Promise<UtilisateursModel> {
+    return await this._service.create(doc);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 404, description: 'Document not found' })
+  async delete(@Param('id') id: string) {
+    await this._service.delete(id);
+  }
+
+  @Put(':id')
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
+  @ApiBody({ type: UtilisateursModel })
+  async update(
+    @Param('id') id,
+    @Body() doc: UtilisateursModel,
+  ): Promise<UtilisateursModel> {
+    return await this._service.update(id, doc);
   }
 }

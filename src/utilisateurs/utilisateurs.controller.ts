@@ -12,6 +12,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
 import { UtilisateursService } from './utilisateurs.service';
 import { AuthGuard } from '@nestjs/passport';
+
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
@@ -43,6 +44,17 @@ export class UtilisateursController {
   async create(@Body() doc: UtilisateursModel) {
     return await this._service.create(doc);
   }
+
+  @Post('recover')
+  async recover(@Body() doc){
+    return await this._service.recoverPassword(doc.email);
+  }
+
+  @Post('reset/:token')
+  async reset(@Param('token') token : string, @Body() doc){
+    return this._service.resetPassword(token,doc)
+  }
+
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })

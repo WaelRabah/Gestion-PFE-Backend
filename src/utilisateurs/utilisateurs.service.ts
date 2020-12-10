@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { IBaseService } from './../base/Ibase.service';
 import { UtilisateursModel } from './utilisateurs.model';
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
@@ -47,6 +48,47 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
 
   comparePassword(pass:string, password: string) {
     return bcrypt.compareSync(pass, password);
+  }
+
+  async recoverPassword(email: string) {
+
+    try{
+      const user = await this.findByEmail(email);
+      if(!user){
+        throw new HttpException('The email address ' + email + ' is not associated with any account. Double-check your email address and try again.',401)
+      }
+      this.generatePasswordReset(user);
+      let subject = "Password change request";
+      let to = user.email;
+      let from = process.env.FROM_EMAIL;
+      let link = "https://www.google.com"+user.resetPasswordToken;
+      let html = `<p>Hi ${user.username}</p>
+                  <p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
+                  <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
+    } catch (error){
+      throw new HttpException(error.message,400)
+    }
+  }
+
+  async resetPassword(token: string, doc){
+
+    try{
+      const user = await this._model.findOne({resetPasswordToken: token, resetPasswordExpires: {$gt: Date.now()}});
+      if (!user){
+        throw new HttpException('Password reset token is invalid or has expired.',401)
+      }
+      user.password = await bcrypt.hash(doc.password,10);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+      let subject = "Your password has been changed";
+      let to = user.email;
+      let from = process.env.FROM_EMAIL;
+      let html = `<p>Hi ${user.username}</p>
+                  <p>This is a confirmation that the password for your account ${user.email} has just been changed.</p>`
+    } catch(error){
+      throw new HttpException(error.message,400)
+    }
   }
 
 

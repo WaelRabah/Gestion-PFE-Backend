@@ -18,7 +18,7 @@ async function bootstrap() {
     .addTag('utilisateurs')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('', app, document);
   app.enableCors(); // protection
   await app.listen(process.env.PORT || '80');
 }

@@ -41,6 +41,14 @@ export class UtilisateursModel extends Document {
   @Prop({ type: String })
   @ApiProperty()
   public niveau: string;
+
+  @Prop({ type: String , required: false })
+  @ApiProperty()
+  public resetPasswordToken: string;
+
+  @Prop({ type: Number , required: false })
+  @ApiProperty()
+  public resetPasswordExpires: number;
 }
 
 export const UtilisateursSchema = SchemaFactory.createForClass(

@@ -9,6 +9,7 @@ import { SoutenancesModule } from './soutenances/soutenances.module';
 import { AnneeUniversitairesModule } from './annee-universitaires/annee-universitaires.module';
 import { SuggestPfeModule } from './suggest-pfe/suggest-pfe.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
+import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
 dotenv.config();
 @Module({
@@ -20,6 +21,7 @@ dotenv.config();
     AnneeUniversitairesModule,
     SuggestPfeModule,
     UtilisateursModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

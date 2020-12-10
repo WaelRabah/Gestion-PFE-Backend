@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
 import { UtilisateursService } from './utilisateurs.service';
+import { Response } from 'express';
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
@@ -27,7 +29,7 @@ export class UtilisateursController {
     return await this._service.get(id);
   }
 
-  @Post()
+  @Post('register')
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -35,8 +37,8 @@ export class UtilisateursController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: UtilisateursModel })
-  async create(@Body() doc: UtilisateursModel): Promise<UtilisateursModel> {
-    return await this._service.create(doc);
+  async create(@Body() doc: UtilisateursModel,@Res() res: Response): Promise<void> {
+    await this._service.create(doc,res);
   }
 
   @Delete(':id')

@@ -1,8 +1,9 @@
+import { ApiTags } from '@nestjs/swagger';
 import { AnneeUniversitairesModel } from './annee-universitaires.model';
 import { AnneeUniversitairesService } from './annee-universitaires.service';
 import { Controller } from '@nestjs/common';
 import { BaseController } from 'src/base/base.controller';
-
+@ApiTags('annee-universitaires')
 @Controller('annee-universitaires')
 export class AnneeUniversitairesController extends BaseController<
   AnneeUniversitairesModel

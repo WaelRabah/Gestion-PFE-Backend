@@ -2,8 +2,8 @@ import { UtilisateursController } from './../utilisateurs/utilisateurs.controlle
 import { EnseignantsModel } from './enseignants.model';
 import { EnseignantsService } from './enseignants.service';
 import { Controller } from '@nestjs/common';
-import { BaseController } from 'src/base/base.controller';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('enseignants')
 @Controller('enseignants')
 export class EnseignantsController extends UtilisateursController<
   EnseignantsModel

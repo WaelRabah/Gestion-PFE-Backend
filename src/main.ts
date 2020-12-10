@@ -1,9 +1,24 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const options = new DocumentBuilder()
+    .setTitle('Gestion pfe')
+    .setDescription("Description de l'API de gestion des pfes")
+    .setVersion('1.0')
+    .addTag('administrateurs')
+    .addTag('enseignants')
+    .addTag('etudiants')
+    .addTag('pfe')
+    .addTag('sessions')
+    .addTag('soutenances')
+    .addTag('annee-universitaires')
+    .addTag('suggest-pfe')
+    .addTag('utilisateurs')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }
 bootstrap();

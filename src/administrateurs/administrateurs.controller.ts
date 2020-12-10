@@ -2,8 +2,9 @@ import { UtilisateursController } from './../utilisateurs/utilisateurs.controlle
 import { AdministrateursService } from './administrateurs.service';
 import { AdministrateursModel } from './administrateurs.model';
 import { Controller } from '@nestjs/common';
-import { BaseController } from 'src/base/base.controller';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('administrateurs')
 @Controller('administrateurs')
 export class AdministrateursController extends UtilisateursController<
   AdministrateursModel

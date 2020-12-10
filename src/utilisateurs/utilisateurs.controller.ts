@@ -17,7 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class UtilisateursController {
 
   constructor(private readonly _service: UtilisateursService) {}
-  
+
   @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiResponse({ status: 200, description: 'Ok' })

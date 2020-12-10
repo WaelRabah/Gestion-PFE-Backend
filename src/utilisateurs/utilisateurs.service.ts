@@ -69,7 +69,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     const doc = await this._model.findById(id);
     if (!doc) throw new NotFoundException('Doc not found');
 
-    return await this._model.findById(id);
+    return doc;
   }
 
   async delete(id: string): Promise<void> {
@@ -85,5 +85,9 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);
+  }
+
+  async getById(id: string):Promise<UtilisateursModel> {
+    return await this._model.findById(id);
   }
 }

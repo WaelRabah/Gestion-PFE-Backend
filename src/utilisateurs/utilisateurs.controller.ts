@@ -7,15 +7,19 @@ import {
   Post,
   Put,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
 import { UtilisateursService } from './utilisateurs.service';
 import { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
   constructor(private readonly _service: UtilisateursService) {}
+  
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiResponse({ status: 200, description: 'Ok' })
   async findAll(): Promise<UtilisateursModel[]> {

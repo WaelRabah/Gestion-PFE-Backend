@@ -6,17 +6,16 @@ import {
   Param,
   Post,
   Put,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
 import { UtilisateursService } from './utilisateurs.service';
-import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
+
   constructor(private readonly _service: UtilisateursService) {}
   
   @UseGuards(AuthGuard('jwt'))
@@ -41,8 +40,8 @@ export class UtilisateursController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: UtilisateursModel })
-  async create(@Body() doc: UtilisateursModel,@Res() res: Response): Promise<void> {
-    await this._service.create(doc,res);
+  async create(@Body() doc: UtilisateursModel) {
+    return await this._service.create(doc);
   }
 
   @Delete(':id')

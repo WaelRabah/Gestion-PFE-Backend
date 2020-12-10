@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BadGatewayException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { Response } from 'express';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -15,24 +14,19 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     private readonly _model: Model<UtilisateursModel>,
   ) {}
 
-  async create(doc: UtilisateursModel, res: Response)  {
+  async create(doc: UtilisateursModel)  {
     try {
       const user = await this._model.findOne({email: doc.email});
       if(user){
-        return res.status(403).json({
-          message: "email is already associated with another account"
-        })
+        throw new HttpException("email is already associated with another account",403)
       }
       const newUser = new this._model(doc);
       const hashedPassword = await bcrypt.hash(newUser.password,10);
       newUser.password = hashedPassword as string;
       await newUser.save();
-      res.status(201).json({
-        message:"User created"
-      })
-
+      return { message:"User created"}
     } catch (error) {
-      res.status(400).json({success: false, message: error.message})
+      throw new HttpException(error.message,400);
     }
   }
   
@@ -54,7 +48,6 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
   comparePassword(pass:string, password: string) {
     return bcrypt.compareSync(pass, password);
   }
-
 
 
   async getAll(): Promise<UtilisateursModel[]> {

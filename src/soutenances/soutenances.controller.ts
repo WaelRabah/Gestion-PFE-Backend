@@ -1,12 +1,60 @@
-import { ApiTags } from '@nestjs/swagger';
-import { SoutenancesService } from './soutenances.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SoutenancesModel } from './soutenances.model';
-import { Controller } from '@nestjs/common';
-import { BaseController } from 'src/base/base.controller';
+import { SoutenancesService } from './soutenances.service';
 @ApiTags('soutenances')
 @Controller('soutenances')
-export class SoutenancesController extends BaseController<SoutenancesModel> {
-  constructor(service: SoutenancesService) {
-    super(service);
+export class SoutenancesController {
+  constructor(private readonly _service: SoutenancesService) {}
+  @Get()
+  @ApiResponse({ status: 200, description: 'Ok' })
+  async findAll(): Promise<SoutenancesModel[]> {
+    return await this._service.getAll();
+  }
+
+  @Get(':id')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async findById(@Param('id') id: string): Promise<SoutenancesModel> {
+    return await this._service.get(id);
+  }
+
+  @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: SoutenancesModel })
+  async create(@Body() doc: SoutenancesModel): Promise<SoutenancesModel> {
+    return await this._service.create(doc);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 404, description: 'Document not found' })
+  async delete(@Param('id') id: string) {
+    await this._service.delete(id);
+  }
+
+  @Put(':id')
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
+  @ApiBody({ type: SoutenancesModel })
+  async update(
+    @Param('id') id,
+    @Body() doc: SoutenancesModel,
+  ): Promise<SoutenancesModel> {
+    return await this._service.update(id, doc);
   }
 }

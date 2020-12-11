@@ -6,14 +6,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
 import { UtilisateursService } from './utilisateurs.service';
+import { AuthGuard } from '@nestjs/passport';
+
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
+
   constructor(private readonly _service: UtilisateursService) {}
+
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiResponse({ status: 200, description: 'Ok' })
   async findAll(): Promise<UtilisateursModel[]> {
@@ -27,7 +33,7 @@ export class UtilisateursController {
     return await this._service.get(id);
   }
 
-  @Post()
+  @Post('register')
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -35,9 +41,20 @@ export class UtilisateursController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: UtilisateursModel })
-  async create(@Body() doc: UtilisateursModel): Promise<UtilisateursModel> {
+  async create(@Body() doc: UtilisateursModel) {
     return await this._service.create(doc);
   }
+
+  @Post('recover')
+  async recover(@Body() doc){
+    return await this._service.recoverPassword(doc.email);
+  }
+
+  @Post('reset/:token')
+  async reset(@Param('token') token : string, @Body() doc){
+    return this._service.resetPassword(token,doc)
+  }
+
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })

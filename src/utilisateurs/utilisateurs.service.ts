@@ -7,15 +7,22 @@ import { Model } from 'mongoose';
 import { BadGatewayException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-
+import * as sgMail from '@sendgrid/mail';
 @Injectable()
 export class UtilisateursService implements IBaseService<UtilisateursModel> {
+  
   constructor(
     @InjectModel('Utilisateurs')
     private readonly _model: Model<UtilisateursModel>,
-  ) {}
+  ) {
+    try{
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    } catch(err){
+      throw new HttpException(err.message,400);
+    }
+  }
 
-  async create(doc: UtilisateursModel)  {
+  async create(doc : UtilisateursModel)  {
     try {
       const user = await this._model.findOne({email: doc.email});
       if(user){
@@ -51,7 +58,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
   }
 
   async recoverPassword(email: string) {
-
+    
     try{
       const user = await this.findByEmail(email);
       if(!user){
@@ -65,6 +72,8 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let html = `<p>Hi ${user.username}</p>
                   <p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
                   <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
+
+      await sgMail.send({to,subject,from,html})
     } catch (error){
       throw new HttpException(error.message,400)
     }
@@ -86,6 +95,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let from = process.env.FROM_EMAIL;
       let html = `<p>Hi ${user.username}</p>
                   <p>This is a confirmation that the password for your account ${user.email} has just been changed.</p>`
+      await sgMail.send({to,subject,from,html})
     } catch(error){
       throw new HttpException(error.message,400)
     }

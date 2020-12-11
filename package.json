@@ -28,6 +28,7 @@
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.7.5",
+    "@sendgrid/mail": "^7.4.0",
     "@types/mongoose": "^5.10.2",
     "bcrypt": "^5.0.0",
     "crypto": "^1.0.1",

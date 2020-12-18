@@ -7,6 +7,8 @@ import { IBaseService } from '../base/Ibase.service';
 import { Model } from 'mongoose';
 import { AnneeUniversitairesModel } from './annee-universitaires.model';
 import { InjectModel } from '@nestjs/mongoose';
+import CreateAnneeUniversitairesDto from './dtos/create-annee-universitaires.dto';
+import UpdateAnneeUniversitairesDto from './dtos/update-annee-universitaires.dto';
 @Injectable()
 export class AnneeUniversitairesService
   implements IBaseService<AnneeUniversitairesModel> {
@@ -16,7 +18,7 @@ export class AnneeUniversitairesService
   ) {}
 
   async create(
-    doc: AnneeUniversitairesModel,
+    doc: CreateAnneeUniversitairesDto,
   ): Promise<AnneeUniversitairesModel> {
     try {
       const newDoc = new this._model(doc);
@@ -49,7 +51,7 @@ export class AnneeUniversitairesService
 
   async update(
     id: string,
-    newDoc: AnneeUniversitairesModel,
+    newDoc: UpdateAnneeUniversitairesDto,
   ): Promise<AnneeUniversitairesModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');

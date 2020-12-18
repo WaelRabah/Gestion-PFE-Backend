@@ -7,13 +7,15 @@ import { IBaseService } from '../base/Ibase.service';
 import { Model } from 'mongoose';
 import { SuggestPfeModel } from './suggest-pfe.model';
 import { InjectModel } from '@nestjs/mongoose';
+import CreateSuggestPfeDto from './dtos/create-suggest-pfe.dto';
+import UpdateSuggestPfeDto from './dtos/update-suggest-pfe.dto';
 @Injectable()
 export class SuggestPfeService implements IBaseService<SuggestPfeModel> {
   constructor(
     @InjectModel('Suggestions') private readonly _model: Model<SuggestPfeModel>,
   ) {}
 
-  async create(doc: SuggestPfeModel): Promise<SuggestPfeModel> {
+  async create(doc: CreateSuggestPfeDto): Promise<SuggestPfeModel> {
     try {
       const newDoc = new this._model(doc);
       return await newDoc.save();
@@ -43,7 +45,10 @@ export class SuggestPfeService implements IBaseService<SuggestPfeModel> {
     await this._model.findByIdAndDelete(id);
   }
 
-  async update(id: string, newDoc: SuggestPfeModel): Promise<SuggestPfeModel> {
+  async update(
+    id: string,
+    newDoc: UpdateSuggestPfeDto,
+  ): Promise<SuggestPfeModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);

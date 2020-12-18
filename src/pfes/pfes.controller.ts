@@ -8,6 +8,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import CreatePfesDto from './dtos/create-pfes.dto';
+import UpdatePfesDto from './dtos/update-pfes.dto';
 import { PfesModel } from './pfes.model';
 import { PfesService } from './pfes.service';
 @ApiTags('pfes')
@@ -34,8 +36,8 @@ export class PfesController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBody({ type: PfesModel })
-  async create(@Body() doc: PfesModel): Promise<PfesModel> {
+  @ApiBody({ type: CreatePfesDto })
+  async create(@Body() doc: CreatePfesDto): Promise<PfesModel> {
     return await this._service.create(doc);
   }
 
@@ -50,8 +52,11 @@ export class PfesController {
   @Put(':id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
-  @ApiBody({ type: PfesModel })
-  async update(@Param('id') id, @Body() doc: PfesModel): Promise<PfesModel> {
+  @ApiBody({ type: UpdatePfesDto })
+  async update(
+    @Param('id') id,
+    @Body() doc: UpdatePfesDto,
+  ): Promise<PfesModel> {
     return await this._service.update(id, doc);
   }
 }

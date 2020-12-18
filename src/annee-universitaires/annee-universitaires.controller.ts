@@ -10,6 +10,8 @@ import {
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AnneeUniversitairesModel } from './annee-universitaires.model';
 import { AnneeUniversitairesService } from './annee-universitaires.service';
+import CreateAnneeUniversitairesDto from './dtos/create-annee-universitaires.dto';
+import UpdateAnneeUniversitairesDto from './dtos/update-annee-universitaires.dto';
 @ApiTags('annee-universitaires')
 @Controller('annee-universitaires')
 export class AnneeUniversitairesController {
@@ -34,9 +36,9 @@ export class AnneeUniversitairesController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBody({ type: AnneeUniversitairesModel })
+  @ApiBody({ type: CreateAnneeUniversitairesDto })
   async create(
-    @Body() doc: AnneeUniversitairesModel,
+    @Body() doc: CreateAnneeUniversitairesDto,
   ): Promise<AnneeUniversitairesModel> {
     return await this._service.create(doc);
   }
@@ -52,10 +54,10 @@ export class AnneeUniversitairesController {
   @Put(':id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
-  @ApiBody({ type: AnneeUniversitairesModel })
+  @ApiBody({ type: UpdateAnneeUniversitairesDto })
   async update(
     @Param('id') id,
-    @Body() doc: AnneeUniversitairesModel,
+    @Body() doc: UpdateAnneeUniversitairesDto,
   ): Promise<AnneeUniversitairesModel> {
     return await this._service.update(id, doc);
   }

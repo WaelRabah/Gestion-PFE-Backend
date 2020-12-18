@@ -7,13 +7,15 @@ import { IBaseService } from '../base/Ibase.service';
 import { Model } from 'mongoose';
 import { SessionsModel } from './sessions.model';
 import { InjectModel } from '@nestjs/mongoose';
+import UpdateSessionsDto from './dtos/update-sessions.dto';
+import CreateSessionsDto from './dtos/create-sessions.dto';
 @Injectable()
 export class SessionsService implements IBaseService<SessionsModel> {
   constructor(
     @InjectModel('Sessions') private readonly _model: Model<SessionsModel>,
   ) {}
 
-  async create(doc: SessionsModel): Promise<SessionsModel> {
+  async create(doc: CreateSessionsDto): Promise<SessionsModel> {
     try {
       const newDoc = new this._model(doc);
       return await newDoc.save();
@@ -45,7 +47,7 @@ export class SessionsService implements IBaseService<SessionsModel> {
     await this._model.findByIdAndDelete(id);
   }
 
-  async update(id: string, newDoc: SessionsModel): Promise<SessionsModel> {
+  async update(id: string, newDoc: UpdateSessionsDto): Promise<SessionsModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);

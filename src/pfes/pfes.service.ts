@@ -7,11 +7,13 @@ import {
 import { IBaseService } from '../base/Ibase.service';
 import { Model } from 'mongoose';
 import { PfesModel } from './pfes.model';
+import CreatePfesDto from './dtos/create-pfes.dto';
+import UpdatePfesDto from './dtos/update-pfes.dto';
 @Injectable()
 export class PfesService implements IBaseService<PfesModel> {
   constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>) {}
 
-  async create(doc: PfesModel): Promise<PfesModel> {
+  async create(doc: CreatePfesDto): Promise<PfesModel> {
     try {
       const newDoc = new this._model(doc);
       return await newDoc.save();
@@ -41,7 +43,7 @@ export class PfesService implements IBaseService<PfesModel> {
     await this._model.findByIdAndDelete(id);
   }
 
-  async update(id: string, newDoc: PfesModel): Promise<PfesModel> {
+  async update(id: string, newDoc: UpdatePfesDto): Promise<PfesModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);

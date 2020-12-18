@@ -8,6 +8,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import CreateSessionsDto from './dtos/create-sessions.dto';
+import UpdateSessionsDto from './dtos/update-sessions.dto';
 import { SessionsModel } from './sessions.model';
 import { SessionsService } from './sessions.service';
 @ApiTags('sessions')
@@ -34,8 +36,8 @@ export class SessionsController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBody({ type: SessionsModel })
-  async create(@Body() doc: SessionsModel): Promise<SessionsModel> {
+  @ApiBody({ type: CreateSessionsDto })
+  async create(@Body() doc: CreateSessionsDto): Promise<SessionsModel> {
     return await this._service.create(doc);
   }
 
@@ -50,10 +52,10 @@ export class SessionsController {
   @Put(':id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
-  @ApiBody({ type: SessionsModel })
+  @ApiBody({ type: UpdateSessionsDto })
   async update(
     @Param('id') id,
-    @Body() doc: SessionsModel,
+    @Body() doc: UpdateSessionsDto,
   ): Promise<SessionsModel> {
     return await this._service.update(id, doc);
   }

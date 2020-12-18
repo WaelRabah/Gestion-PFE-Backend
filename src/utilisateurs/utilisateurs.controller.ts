@@ -12,11 +12,12 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UtilisateursModel } from './utilisateurs.model';
 import { UtilisateursService } from './utilisateurs.service';
 import { AuthGuard } from '@nestjs/passport';
+import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
+import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
-
   constructor(private readonly _service: UtilisateursService) {}
 
   @UseGuards(AuthGuard('jwt'))
@@ -40,21 +41,20 @@ export class UtilisateursController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBody({ type: UtilisateursModel })
-  async create(@Body() doc: UtilisateursModel) {
+  @ApiBody({ type: CreateUtilisateursDto })
+  async create(@Body() doc: CreateUtilisateursDto) {
     return await this._service.create(doc);
   }
 
   @Post('recover')
-  async recover(@Body() doc){
+  async recover(@Body() doc) {
     return await this._service.recoverPassword(doc.email);
   }
 
   @Post('reset/:token')
-  async reset(@Param('token') token : string, @Body() doc){
-    return this._service.resetPassword(token,doc)
+  async reset(@Param('token') token: string, @Body() doc) {
+    return this._service.resetPassword(token, doc);
   }
-
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
@@ -67,10 +67,10 @@ export class UtilisateursController {
   @Put(':id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
-  @ApiBody({ type: UtilisateursModel })
+  @ApiBody({ type: UpdateUtilisateursDto })
   async update(
     @Param('id') id,
-    @Body() doc: UtilisateursModel,
+    @Body() doc: UpdateUtilisateursDto,
   ): Promise<UtilisateursModel> {
     return await this._service.update(id, doc);
   }

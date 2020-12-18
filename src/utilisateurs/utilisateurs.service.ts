@@ -10,6 +10,7 @@ import * as crypto from 'crypto';
 import * as sgMail from '@sendgrid/mail';
 import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
+import ResetPasswordDTO from './dtos/reset-password.dto';
 @Injectable()
 export class UtilisateursService implements IBaseService<UtilisateursModel> {
   constructor(
@@ -75,19 +76,22 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let subject = 'Password change request';
       let to = user.email;
       let from = process.env.FROM_EMAIL;
-      let link = 'https://www.google.com' + user.resetPasswordToken;
+      let link = 'https://www.google.com/' + user.resetPasswordToken;
       let html = `<p>Hi ${user.username}</p>
                   <p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
                   <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
-
-      await sgMail.send({ to, subject, from, html });
+      console.log(link)
+      return await sgMail.send({ to, subject, from, html });
     } catch (error) {
       throw new HttpException(error.message, 400);
     }
   }
 
-  async resetPassword(token: string, doc) {
+  async resetPassword(token: string, doc:ResetPasswordDTO) {
     try {
+      if( !(doc.confirmed_password==doc.password) ){
+        throw new HttpException('Passwords does not match',403);
+      }
       const user = await this._model.findOne({
         resetPasswordToken: token,
         resetPasswordExpires: { $gt: Date.now() },
@@ -107,7 +111,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let from = process.env.FROM_EMAIL;
       let html = `<p>Hi ${user.username}</p>
                   <p>This is a confirmation that the password for your account ${user.email} has just been changed.</p>`;
-      await sgMail.send({ to, subject, from, html });
+      return await sgMail.send({ to, subject, from, html });
     } catch (error) {
       throw new HttpException(error.message, 400);
     }

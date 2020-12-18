@@ -24,6 +24,7 @@ export class AuthService {
                 username: user.username,
                 firstname: user.firstname,
                 lastname: user.lastname,
+                role: user.role,
             }
             return {
                 token: sign(payload,process.env.JWT_SECRET,{

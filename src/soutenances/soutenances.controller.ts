@@ -8,6 +8,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import CreateSoutenancesDto from './dtos/create-soutenances.dto';
+import UpdateSoutenancesDto from './dtos/update-soutenances.dto';
 import { SoutenancesModel } from './soutenances.model';
 import { SoutenancesService } from './soutenances.service';
 @ApiTags('soutenances')
@@ -34,8 +36,8 @@ export class SoutenancesController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBody({ type: SoutenancesModel })
-  async create(@Body() doc: SoutenancesModel): Promise<SoutenancesModel> {
+  @ApiBody({ type: CreateSoutenancesDto })
+  async create(@Body() doc: CreateSoutenancesDto): Promise<SoutenancesModel> {
     return await this._service.create(doc);
   }
 
@@ -50,10 +52,10 @@ export class SoutenancesController {
   @Put(':id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
-  @ApiBody({ type: SoutenancesModel })
+  @ApiBody({ type: UpdateSoutenancesDto })
   async update(
     @Param('id') id,
-    @Body() doc: SoutenancesModel,
+    @Body() doc: UpdateSoutenancesDto,
   ): Promise<SoutenancesModel> {
     return await this._service.update(id, doc);
   }

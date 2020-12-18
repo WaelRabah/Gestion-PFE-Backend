@@ -8,6 +8,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import CreateSuggestPfeDto from './dtos/create-suggest-pfe.dto';
+import UpdateSuggestPfeDto from './dtos/update-suggest-pfe.dto';
 import { SuggestPfeModel } from './suggest-pfe.model';
 import { SuggestPfeService } from './suggest-pfe.service';
 @ApiTags('suggest-pfe')
@@ -34,8 +36,8 @@ export class SuggestPfeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBody({ type: SuggestPfeModel })
-  async create(@Body() doc: SuggestPfeModel): Promise<SuggestPfeModel> {
+  @ApiBody({ type: CreateSuggestPfeDto })
+  async create(@Body() doc: CreateSuggestPfeDto): Promise<SuggestPfeModel> {
     return await this._service.create(doc);
   }
 
@@ -50,10 +52,10 @@ export class SuggestPfeController {
   @Put(':id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'doc deleted successfully.' })
-  @ApiBody({ type: SuggestPfeModel })
+  @ApiBody({ type: UpdateSuggestPfeDto })
   async update(
     @Param('id') id,
-    @Body() doc: SuggestPfeModel,
+    @Body() doc: UpdateSuggestPfeDto,
   ): Promise<SuggestPfeModel> {
     return await this._service.update(id, doc);
   }

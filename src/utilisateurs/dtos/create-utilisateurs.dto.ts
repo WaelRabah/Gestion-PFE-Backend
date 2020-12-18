@@ -4,10 +4,11 @@ import { Role } from '../enums/role.enum';
 class CreateUtilisateursDto {
   @IsNotEmpty()
   @IsString()
+  @ApiProperty()
   public password: string;
   @IsIn([Role.Administrateur, Role.Enseignant, Role.Etudiant], {
     message:
-      'statut should be one of 3 values : [  Administrateur,Enseignant,Etudiant,]',
+      'role should be one of 3 values : [  Administrateur,Enseignant,Etudiant,]',
   })
   @IsNotEmpty()
   @ApiProperty()
@@ -16,6 +17,7 @@ class CreateUtilisateursDto {
   @IsString()
   @ApiProperty()
   public username: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiProperty()

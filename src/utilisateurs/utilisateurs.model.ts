@@ -7,7 +7,7 @@ export class UtilisateursModel extends Document {
   @Prop({ type: String, required: true })
   public password: string;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: String, required: true })
   public role: Role;
 
   @Prop({ type: String, required: true })

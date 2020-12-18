@@ -14,6 +14,7 @@ import { UtilisateursService } from './utilisateurs.service';
 import { AuthGuard } from '@nestjs/passport';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
+import ResetPasswordDTO from './dtos/reset-password.dto';
 
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
@@ -46,13 +47,26 @@ export class UtilisateursController {
     return await this._service.create(doc);
   }
 
+  @ApiResponse({
+    status: 201,
+    description: 'Email sent to the user',
+  })
+  @ApiResponse({ status: 401, description: 'The email address is not associated with any account' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   @Post('recover')
   async recover(@Body() doc) {
     return await this._service.recoverPassword(doc.email);
   }
 
+  @ApiResponse({
+    status: 201,
+    description: 'Password changed',
+  })
+  @ApiResponse({ status: 401, description: 'Password reset token is invalid or has expired.' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 403, description: 'Passwords does not match' })
   @Post('reset/:token')
-  async reset(@Param('token') token: string, @Body() doc) {
+  async reset(@Param('token') token: string, @Body() doc:ResetPasswordDTO) {
     return this._service.resetPassword(token, doc);
   }
 

@@ -1,8 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 
+@ApiTags('authentification')
 @Controller('auth')
 export class AuthController {
 
@@ -10,7 +11,7 @@ export class AuthController {
 
     @ApiResponse({
         status: 200,
-        description: 'The record has been successfully created.',
+        description: 'Logged successfully.',
       })
       @ApiResponse({ status: 403, description: 'Forbidden.' })
       @ApiResponse({ status: 400, description: 'Bad Request.' })

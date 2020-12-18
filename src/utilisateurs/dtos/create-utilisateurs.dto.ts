@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../enums/role.enum';
 class CreateUtilisateursDto {
@@ -28,31 +28,31 @@ class CreateUtilisateursDto {
   @IsEmail()
   @ApiProperty()
   public email: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public departement: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public grade: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public annee: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public filiere: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public niveau: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public resetPasswordToken: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @ApiProperty()
   public resetPasswordExpires: number;

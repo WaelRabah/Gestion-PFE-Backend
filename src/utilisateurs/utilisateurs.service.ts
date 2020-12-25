@@ -11,6 +11,7 @@ import * as sgMail from '@sendgrid/mail';
 import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
+import { Role } from './enums/role.enum';
 @Injectable()
 export class UtilisateursService implements IBaseService<UtilisateursModel> {
   constructor(
@@ -129,8 +130,16 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     const doc = await this._model.findById(id);
     if (!doc) throw new NotFoundException('Doc not found');
 
-    return await this._model.findById(id);
+    return doc;
   }
+
+  async getOnRole(role: string): Promise<UtilisateursModel[]> {
+    const roleAttr= role==Role.Etudiant? Role.Etudiant:Role.Enseignant==role?Role.Enseignant:Role.Administrateur;
+    const doc = await this._model.find({role:roleAttr});
+    if (!doc) throw new NotFoundException('Doc not found');
+    return doc;
+  }
+  
 
   async delete(id: string): Promise<void> {
     const doc = await this._model.findById(id);

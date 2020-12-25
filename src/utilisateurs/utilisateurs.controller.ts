@@ -28,6 +28,12 @@ export class UtilisateursController {
     return await this._service.getAll();
   }
 
+  @Get(':role')
+  @ApiResponse({ status: 200, description: 'Ok' })
+  async findOnRole(@Param('role') role: string): Promise<UtilisateursModel[]> {
+    return await this._service.getOnRole(role);
+  }
+
   @Get(':id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })

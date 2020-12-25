@@ -9,5 +9,8 @@ export class SessionsModel extends Document {
   public filiere: string;
   @Prop({ type: Number, required: true })
   public numero: number;
+
+  @Prop({ type: String, required: true })
+  public president: string;
 }
 export const SessionsSchema = SchemaFactory.createForClass(SessionsModel);

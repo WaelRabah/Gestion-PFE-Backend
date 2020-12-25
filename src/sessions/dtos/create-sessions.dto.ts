@@ -1,10 +1,10 @@
-import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateSessionsDto {
   @IsNotEmpty()
-  @IsDateString()
+  @IsString()
   @ApiProperty()
-  public date: Date;
+  public date: string;
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
@@ -13,6 +13,10 @@ class CreateSessionsDto {
   @IsNumber()
   @ApiProperty()
   public numero: number;
+
+  @IsString()
+  @ApiProperty()
+  public president: string;
 }
 
 export default CreateSessionsDto;

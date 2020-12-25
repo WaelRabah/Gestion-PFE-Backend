@@ -50,6 +50,6 @@ export class SessionsService implements IBaseService<SessionsModel> {
   async update(id: string, newDoc: UpdateSessionsDto): Promise<SessionsModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
-    return await this._model.findByIdAndUpdate(id, newDoc);
+    return await this._model.findByIdAndUpdate(id, newDoc,{new: true});
   }
 }

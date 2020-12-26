@@ -28,6 +28,12 @@ export class SoutenancesController {
   async findById(@Param('id') id: string): Promise<SoutenancesModel> {
     return await this._service.get(id);
   }
+  @Get('/session/:id')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async findBySessionId(@Param('id') id: string): Promise<any[]> {
+    return await this._service.getAllBySession(id);
+  }
 
   @Post()
   @ApiResponse({

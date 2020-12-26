@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 @Schema()
 export class SessionsModel extends Document {
   @Prop({ type: Date, required: true })
@@ -12,5 +12,7 @@ export class SessionsModel extends Document {
 
   @Prop({ type: String, required: true })
   public president: string;
+  @Prop({ type: Types.ObjectId, required: true })
+  public presidentId: string;
 }
 export const SessionsSchema = SchemaFactory.createForClass(SessionsModel);

@@ -1,19 +1,29 @@
-import { IsAlphanumeric, IsNotEmpty } from 'class-validator';
+import { IsAlpha, IsAlphanumeric, IsMongoId, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdatePfesDto {
-  @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty()
   public entreprise: string;
-  @IsNotEmpty()
+
   @IsAlphanumeric()
   @ApiProperty()
-  public filepath: string;
-  @IsNotEmpty()
+  public filePath: string;
+
   @IsAlphanumeric()
   @ApiProperty()
   public titre: string;
+
+  @IsAlpha()
+  @ApiProperty()
+  public nomEncadrantEntreprise: string;
+  @IsMongoId()
   @IsNotEmpty()
+  public soutenanceId: string;
+
+  @IsAlphanumeric()
+  @ApiProperty()
+  public filepath: string;
+
   @IsAlphanumeric()
   @ApiProperty()
   public description: string;

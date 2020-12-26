@@ -9,12 +9,16 @@ import { SoutenancesModel } from './soutenances.model';
 import { InjectModel } from '@nestjs/mongoose';
 import UpdateSoutenancesDto from './dtos/update-soutenances.dto';
 import CreateSoutenancesDto from './dtos/create-soutenances.dto';
+import { UtilisateursService } from 'src/utilisateurs/utilisateurs.service';
+import { PfesService } from 'src/pfes/pfes.service';
 @Injectable()
 export class SoutenancesService implements IBaseService<SoutenancesModel> {
   constructor(
     @InjectModel('Soutenances')
     private readonly _model: Model<SoutenancesModel>,
-  ) {}
+    private readonly _userService: UtilisateursService,
+    private readonly _pfeService: PfesService
+  ) { }
 
   async create(doc: CreateSoutenancesDto): Promise<SoutenancesModel> {
     try {
@@ -24,10 +28,39 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
       throw new BadGatewayException(error);
     }
   }
-
   async getAll(): Promise<SoutenancesModel[]> {
     try {
       return await this._model.find();
+    } catch (error) {
+      throw new BadGatewayException(error);
+    }
+  }
+  async getAllBySession( sessionId : string): Promise<any[]> {
+    try {
+      let soutenances: any[] = await this._model.find({sessionId : sessionId})
+      soutenances = await Promise.all(soutenances.map(async item => {
+        const { encadrantId, presidentId, studentId, pfeId } = item
+        const encadrant = await this._userService.get(encadrantId)
+        const president = await this._userService.get(presidentId)
+        const student = await this._userService.get(studentId)
+        const pfe =await this._pfeService.get(pfeId)
+
+        return {
+          original : item ,
+          displayable : {
+            respInsat: encadrant.firstname+" "+encadrant.lastname,
+            respEntreprise: pfe.nomEncadrantEntreprise,
+            Examinateur: president.firstname+" "+president.lastname,
+            entreprise: pfe.entreprise,
+            candidat: student.firstname+" "+student.lastname,
+            sujet : pfe.titre,
+            heure : item.heure ,
+            isItPublic : item.isItPublic
+          }
+        }
+      }))
+
+      return soutenances;
     } catch (error) {
       throw new BadGatewayException(error);
     }

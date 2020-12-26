@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 @Schema()
 export class PfesModel extends Document {
@@ -10,6 +10,12 @@ export class PfesModel extends Document {
   public filepath: string;
   @Prop({ type: String, required: true })
   public titre: string;
+  @Prop({ type: String, required: true })
+  public nomEncadrantEntreprise: string;
+  @Prop({ type: Types.ObjectId })
+  public soutenanceId: string;
+  @Prop({ type: Types.ObjectId })
+  public studentId: string;
   @Prop({type: String, required: true})
   public description: string;
 }

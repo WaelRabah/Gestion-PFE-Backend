@@ -30,6 +30,14 @@ export class PfesService implements IBaseService<PfesModel> {
     }
   }
 
+  async getAllUnassigned(): Promise<PfesModel[]> {
+    try {
+      return await this._model.find({soutenanceId : undefined});
+    } catch (error) {
+      throw new BadGatewayException(error);
+    }
+  }
+
   async get(id: string): Promise<PfesModel> {
     const doc = await this._model.findById(id);
     if (!doc) throw new NotFoundException('Doc not found');

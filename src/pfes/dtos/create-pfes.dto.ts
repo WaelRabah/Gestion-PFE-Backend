@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsAlpha, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreatePfesDto {
   @IsNotEmpty()
@@ -15,8 +15,13 @@ class CreatePfesDto {
   @ApiProperty()
   public titre: string;
 
+
   @IsNotEmpty()
-  @IsString()
+  @IsAlpha()
+  @ApiProperty()
+  public nomEncadrantEntreprise: string;
+  @IsNotEmpty()
+  @IsAlpha()
   @ApiProperty()
   public description: string;
 }

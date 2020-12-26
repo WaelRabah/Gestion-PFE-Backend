@@ -21,7 +21,11 @@ export class PfesController {
   async findAll(): Promise<PfesModel[]> {
     return await this._service.getAll();
   }
-
+  @Get("/unassigned")
+  @ApiResponse({ status: 200, description: 'Ok' })
+  async findAllUnassigned(): Promise<PfesModel[]> {
+    return await this._service.getAllUnassigned();
+  }
   @Get(':id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })

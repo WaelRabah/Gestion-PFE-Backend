@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsAlpha, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreatePfesDto {
   @IsNotEmpty()
@@ -13,6 +13,11 @@ class CreatePfesDto {
   @IsString()
   @ApiProperty()
   public titre: string;
+  @IsNotEmpty()
+  @IsAlpha()
+  @ApiProperty()
+  public nomEncadrantEntreprise: string;
+  
 }
 
 export default CreatePfesDto;

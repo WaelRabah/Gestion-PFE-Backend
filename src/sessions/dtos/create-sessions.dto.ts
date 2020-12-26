@@ -17,6 +17,10 @@ class CreateSessionsDto {
   @IsString()
   @ApiProperty()
   public president: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  public presidentId: string;
 }
 
 export default CreateSessionsDto;

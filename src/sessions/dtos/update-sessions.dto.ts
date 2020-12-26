@@ -13,6 +13,9 @@ class UpdateSessionsDto {
   @IsString()
   @ApiProperty()
   public president: string;
+  @IsString()
+  @ApiProperty()
+  public presidentId: string;
 }
 
 export default UpdateSessionsDto;

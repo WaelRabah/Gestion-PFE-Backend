@@ -11,7 +11,13 @@ export class SoutenancesModel extends Document {
   public presidentId: string;
   @Prop({ type: Types.ObjectId, required: true })
   public rapporteurId: string;
+  @Prop({ type: Types.ObjectId, required: true })
+  public studentId: string;
+  @Prop({ type: Types.ObjectId, required: true })
+  public pfeId: string;
+  @Prop({ type: Types.ObjectId, required: true })
+  public sessionId: string;
   @Prop({ type: Boolean, required: true })
-  public type: boolean;
+  public isItPublic: boolean;
 }
 export const SoutenancesSchema = SchemaFactory.createForClass(SoutenancesModel);

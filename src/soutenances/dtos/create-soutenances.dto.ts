@@ -20,7 +20,19 @@ class CreateSoutenancesDto {
   @IsNotEmpty()
   @IsBoolean()
   @ApiProperty()
-  public type: boolean;
+  public isItPublic: boolean;
+  @IsMongoId()
+  @IsNotEmpty()
+  @ApiProperty()
+  public studentId: string;
+  @IsMongoId()
+  @IsNotEmpty()
+  @ApiProperty()
+  public pfeId: string;
+  @IsMongoId()
+  @IsNotEmpty()
+  @ApiProperty()
+  public sessionId: string;
 }
 
 export default CreateSoutenancesDto;

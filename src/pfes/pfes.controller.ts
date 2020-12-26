@@ -6,12 +6,18 @@ import {
   Param,
   Post,
   Put,
+  Request,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
 import CreatePfesDto from './dtos/create-pfes.dto';
 import UpdatePfesDto from './dtos/update-pfes.dto';
 import { PfesModel } from './pfes.model';
 import { PfesService } from './pfes.service';
+import {editFileName} from './utils/EditFileName';
 @ApiTags('pfes')
 @Controller('pfes')
 export class PfesController {
@@ -34,6 +40,12 @@ export class PfesController {
   }
 
   @Post()
+  @UseInterceptors(FileInterceptor('file',{
+    storage: diskStorage({
+      destination: './uploads/sujets-pfes/',
+      filename: editFileName
+    })
+  }))
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -41,7 +53,8 @@ export class PfesController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreatePfesDto })
-  async create(@Body() doc: CreatePfesDto): Promise<PfesModel> {
+  async create(@UploadedFile() file, @Body() doc :CreatePfesDto): Promise<PfesModel> {
+    doc.filepath = './uploads/'+file.path;
     return await this._service.create(doc);
   }
 

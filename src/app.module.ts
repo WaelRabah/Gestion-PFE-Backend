@@ -11,6 +11,7 @@ import { SuggestPfeModule } from './suggest-pfe/suggest-pfe.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
 import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
+import { MulterModule } from '@nestjs/platform-express';
 dotenv.config();
 @Module({
   imports: [
@@ -22,6 +23,7 @@ dotenv.config();
     SuggestPfeModule,
     UtilisateursModule,
     AuthModule,
+    MulterModule.register({})
   ],
   controllers: [AppController],
   providers: [AppService],

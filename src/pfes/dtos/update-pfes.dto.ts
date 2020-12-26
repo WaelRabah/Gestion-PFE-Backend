@@ -19,6 +19,14 @@ class UpdatePfesDto {
   @IsMongoId()
   @IsNotEmpty()
   public soutenanceId: string;
+
+  @IsAlphanumeric()
+  @ApiProperty()
+  public filepath: string;
+
+  @IsAlphanumeric()
+  @ApiProperty()
+  public description: string;
 }
 
 export default UpdatePfesDto;

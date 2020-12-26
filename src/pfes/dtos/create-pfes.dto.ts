@@ -5,19 +5,25 @@ class CreatePfesDto {
   @IsString()
   @ApiProperty()
   public entreprise: string;
-  @IsNotEmpty()
-  @IsString()
+
+  //@IsString()
   @ApiProperty()
-  public filePath: string;
+  public filepath: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
   public titre: string;
+
+
   @IsNotEmpty()
   @IsAlpha()
   @ApiProperty()
   public nomEncadrantEntreprise: string;
-  
+  @IsNotEmpty()
+  @IsAlpha()
+  @ApiProperty()
+  public description: string;
 }
 
 export default CreatePfesDto;

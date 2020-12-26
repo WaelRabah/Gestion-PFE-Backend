@@ -8,11 +8,15 @@ class UpdatePfesDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty()
-  public filePath: string;
+  public filepath: string;
   @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty()
   public titre: string;
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  @ApiProperty()
+  public description: string;
 }
 
 export default UpdatePfesDto;

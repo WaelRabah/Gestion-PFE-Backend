@@ -3,10 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Post,
   Put,
   Request,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -18,6 +20,15 @@ import UpdatePfesDto from './dtos/update-pfes.dto';
 import { PfesModel } from './pfes.model';
 import { PfesService } from './pfes.service';
 import {editFileName} from './utils/EditFileName';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Status } from './enums/status.enum';
+import StatusChangeDTO from './dtos/status-change.dto';
+import { createReadStream  } from 'fs';
+import { fileURLToPath } from 'url';
+import SearchPfeDTO from './dtos/search-pfe.dto';
+import { Role } from 'src/utilisateurs/enums/role.enum';
+import {Response} from 'express';
 @ApiTags('pfes')
 @Controller('pfes')
 export class PfesController {
@@ -39,6 +50,8 @@ export class PfesController {
     return await this._service.get(id);
   }
 
+  @Roles(Role.Etudiant)
+
   @Post()
   @UseInterceptors(FileInterceptor('file',{
     storage: diskStorage({
@@ -53,9 +66,8 @@ export class PfesController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreatePfesDto })
-  async create(@UploadedFile() file, @Body() doc :CreatePfesDto): Promise<PfesModel> {
-    doc.filepath = './uploads/'+file.path;
-    return await this._service.create(doc);
+  async create(@Body() doc :CreatePfesDto, @UploadedFile() file, @Request() req): Promise<PfesModel> {
+    return await this._service.create(doc,file.path,Status.Attente,req.user);
   }
 
   @Delete(':id')
@@ -76,4 +88,33 @@ export class PfesController {
   ): Promise<PfesModel> {
     return await this._service.update(id, doc);
   }
+
+  @Roles(Role.Administrateur)
+  @Get('pdf/:id')
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 200, description: 'got PDF successfully.' })
+  @Header('Content-Type', 'application/pdf')
+  async getPFE_PDF(
+    @Param('id') id,
+    @Res() res: Response
+  ) {
+    
+    const sujetPFE = await this._service.get(id);
+    res.setHeader('Content-Disposition',`attachement; filename=${sujetPFE.id}.pdf`)
+    const file = createReadStream(sujetPFE.filepath);
+    file.pipe(res);
+    return res;
+  }
+
+
+  @Post('search')
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiBody({ type: CreatePfesDto })
+  findPFEs(
+    @Body() query: SearchPfeDTO
+  ) : Promise<PfesModel[]> {
+    return this._service.find(query);
+  }
+
 }

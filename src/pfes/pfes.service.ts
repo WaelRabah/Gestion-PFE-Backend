@@ -9,13 +9,16 @@ import { Model } from 'mongoose';
 import { PfesModel } from './pfes.model';
 import CreatePfesDto from './dtos/create-pfes.dto';
 import UpdatePfesDto from './dtos/update-pfes.dto';
+import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
+import { Status } from './enums/status.enum';
+import SearchPfeDTO from './dtos/search-pfe.dto';
 @Injectable()
 export class PfesService implements IBaseService<PfesModel> {
   constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>) {}
 
-  async create(doc: CreatePfesDto): Promise<PfesModel> {
+  async create(doc: CreatePfesDto,filepath: string, status: Status, etudiant: UtilisateursModel): Promise<PfesModel> {
     try {
-      const newDoc = new this._model(doc);
+      const newDoc = new this._model({...doc,filepath,status,etudiant:etudiant.id});
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -55,5 +58,9 @@ export class PfesService implements IBaseService<PfesModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);
+  }
+
+  find(query: SearchPfeDTO) : Promise<PfesModel[]> {
+    return  this._model.find(query).exec();
   }
 }

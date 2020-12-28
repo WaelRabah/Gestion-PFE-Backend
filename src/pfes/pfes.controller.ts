@@ -1,3 +1,4 @@
+import { AuthGuard } from '@nestjs/passport';
 import {
   Body,
   Controller,
@@ -10,6 +11,7 @@ import {
   Request,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -31,6 +33,7 @@ import { Role } from 'src/utilisateurs/enums/role.enum';
 import {Response} from 'express';
 @ApiTags('pfes')
 @Controller('pfes')
+@UseGuards(AuthGuard('jwt'),RolesGuard)
 export class PfesController {
   constructor(private readonly _service: PfesService) {}
   @Get()
@@ -51,7 +54,6 @@ export class PfesController {
   }
 
   @Roles(Role.Etudiant)
-
   @Post()
   @UseInterceptors(FileInterceptor('file',{
     storage: diskStorage({
@@ -87,6 +89,17 @@ export class PfesController {
     @Body() doc: UpdatePfesDto,
   ): Promise<PfesModel> {
     return await this._service.update(id, doc);
+  }
+
+  @Roles(Role.Administrateur)
+  @Put('valider/:id')
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 200, description: 'doc updated successfully.' })
+  async validerPFE(
+    @Param('id') id,
+    @Body() doc: StatusChangeDTO,
+  ): Promise<PfesModel> {
+    return await this._service.changeStatus(id, doc);
   }
 
   @Roles(Role.Administrateur)

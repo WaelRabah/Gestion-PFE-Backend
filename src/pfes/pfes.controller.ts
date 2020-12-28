@@ -123,7 +123,7 @@ export class PfesController {
   @Post('search')
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 200, description: 'OK' })
-  @ApiBody({ type: CreatePfesDto })
+  @ApiBody({ type: SearchPfeDTO })
   findPFEs(
     @Body() query: SearchPfeDTO
   ) : Promise<PfesModel[]> {

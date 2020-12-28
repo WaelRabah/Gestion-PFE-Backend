@@ -1,7 +1,7 @@
 import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Status } from '../../enums/status.enum';
-class SearchPfeDTO {
+class SearchPfeSuggestionDTO {
   @IsOptional()
   @IsString()
   @ApiProperty()
@@ -26,4 +26,4 @@ class SearchPfeDTO {
   public status: Status;
 }
 
-export default SearchPfeDTO;
+export default SearchPfeSuggestionDTO;

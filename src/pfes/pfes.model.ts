@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document, Types } from 'mongoose';
-import { Status } from './enums/status.enum';
+import { Status } from '../enums/status.enum';
 
 @Schema()
 export class PfesModel extends Document {

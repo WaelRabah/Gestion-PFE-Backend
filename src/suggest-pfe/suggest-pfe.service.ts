@@ -9,15 +9,19 @@ import { SuggestPfeModel } from './suggest-pfe.model';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateSuggestPfeDto from './dtos/create-suggest-pfe.dto';
 import UpdateSuggestPfeDto from './dtos/update-suggest-pfe.dto';
+import { Status } from '../enums/status.enum';
+import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
+import SearchPfeSuggestionDTO from './dtos/search-pfe-suggestion.dto';
+import StatusChangeDTO from './dtos/status-change.dto';
 @Injectable()
 export class SuggestPfeService implements IBaseService<SuggestPfeModel> {
   constructor(
     @InjectModel('Suggestions') private readonly _model: Model<SuggestPfeModel>,
   ) {}
 
-  async create(doc: CreateSuggestPfeDto): Promise<SuggestPfeModel> {
+  async create(doc: CreateSuggestPfeDto,filepath: string, status: Status, enseignant: UtilisateursModel): Promise<SuggestPfeModel> {
     try {
-      const newDoc = new this._model(doc);
+      const newDoc = new this._model({...doc,filepath,status,enseignantId:enseignant.id});
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -52,5 +56,15 @@ export class SuggestPfeService implements IBaseService<SuggestPfeModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);
+  }
+
+  async changeStatus(id: string, newDoc: StatusChangeDTO): Promise<SuggestPfeModel> {
+    const doc = await this.get(id);
+    if (!doc) throw new NotFoundException('Doc not found');
+    return await this._model.findByIdAndUpdate(id, newDoc);
+  }
+
+  find(query: SearchPfeSuggestionDTO) : Promise<SuggestPfeModel[]> {
+    return  this._model.find(query).exec();
   }
 }

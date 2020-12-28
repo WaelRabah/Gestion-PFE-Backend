@@ -10,7 +10,7 @@ import { PfesModel } from './pfes.model';
 import CreatePfesDto from './dtos/create-pfes.dto';
 import UpdatePfesDto from './dtos/update-pfes.dto';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
-import { Status } from './enums/status.enum';
+import { Status } from '../enums/status.enum';
 import SearchPfeDTO from './dtos/search-pfe.dto';
 import StatusChangeDTO from './dtos/status-change.dto';
 @Injectable()

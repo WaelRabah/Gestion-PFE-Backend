@@ -12,13 +12,14 @@ import UpdatePfesDto from './dtos/update-pfes.dto';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 import { Status } from './enums/status.enum';
 import SearchPfeDTO from './dtos/search-pfe.dto';
+import StatusChangeDTO from './dtos/status-change.dto';
 @Injectable()
 export class PfesService implements IBaseService<PfesModel> {
   constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>) {}
 
   async create(doc: CreatePfesDto,filepath: string, status: Status, etudiant: UtilisateursModel): Promise<PfesModel> {
     try {
-      const newDoc = new this._model({...doc,filepath,status,etudiant:etudiant.id});
+      const newDoc = new this._model({...doc,filepath,status,studentId:etudiant.id});
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -55,6 +56,12 @@ export class PfesService implements IBaseService<PfesModel> {
   }
 
   async update(id: string, newDoc: UpdatePfesDto): Promise<PfesModel> {
+    const doc = await this.get(id);
+    if (!doc) throw new NotFoundException('Doc not found');
+    return await this._model.findByIdAndUpdate(id, newDoc);
+  }
+
+  async changeStatus(id: string, newDoc: StatusChangeDTO): Promise<PfesModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);

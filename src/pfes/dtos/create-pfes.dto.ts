@@ -6,9 +6,6 @@ class CreatePfesDto {
   @ApiProperty()
   public entreprise: string;
 
-  //@IsString()
-  @ApiProperty()
-  public filepath: string;
 
   @IsNotEmpty()
   @IsString()
@@ -20,6 +17,7 @@ class CreatePfesDto {
   @IsAlpha()
   @ApiProperty()
   public nomEncadrantEntreprise: string;
+
   @IsNotEmpty()
   @IsAlpha()
   @ApiProperty()

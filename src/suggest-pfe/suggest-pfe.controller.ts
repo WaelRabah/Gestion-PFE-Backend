@@ -97,7 +97,7 @@ export class SuggestPfeController {
     return await this._service.changeStatus(id, doc);
   }
 
-  @Roles(Role.Administrateur)
+  @Roles(Role.Administrateur,Role.Enseignant)
   @Get('pdf/:id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'got PDF successfully.' })
@@ -113,7 +113,7 @@ export class SuggestPfeController {
     return res;
   }
 
-
+  @Roles(Role.Administrateur,Role.Enseignant)
   @Post('search')
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 200, description: 'OK' })

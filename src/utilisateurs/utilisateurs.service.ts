@@ -12,6 +12,7 @@ import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
 import { Role } from './enums/role.enum';
+import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
 @Injectable()
 export class UtilisateursService implements IBaseService<UtilisateursModel> {
   constructor(
@@ -21,6 +22,39 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     try {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     } catch (err) {
+      throw new HttpException(err.message, 400);
+    }
+  }
+
+  async createEtudiant(doc: AjoutEtudiantDTO){
+    try{
+      const user = await this._model.findOne({ email: doc.email });
+      if (user) {
+        throw new HttpException(
+          'email is already associated with another account',
+          403,
+        );
+      }
+      const password = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const username = doc.firstname+doc.lastname;
+      const newEtudiant = new this._model({
+        ...doc,
+        password:hashedPassword,
+        username,
+        role:Role.Etudiant,
+      });
+      await newEtudiant.save();
+      let subject = 'Account created.';
+      let to = newEtudiant.email;
+      let from = process.env.FROM_EMAIL;
+      let html = `<p>Hi ${newEtudiant.firstname} ${newEtudiant.lastname}</p>
+                  <p>This is your Account in the INSAT Platfrom for the End Of Studies Internship</p>
+                  <p>email: ${newEtudiant.email}</p>
+                  <p>password: ${newEtudiant.password}</p>
+                  <p>NB: Please change your password </p>`;
+      return await sgMail.send({ to, subject, from, html });
+    } catch(err){
       throw new HttpException(err.message, 400);
     }
   }

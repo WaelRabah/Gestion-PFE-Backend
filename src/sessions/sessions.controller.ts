@@ -6,16 +6,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/guards/roles.guard';
 import CreateSessionsDto from './dtos/create-sessions.dto';
 import UpdateSessionsDto from './dtos/update-sessions.dto';
 import { SessionsModel } from './sessions.model';
 import { SessionsService } from './sessions.service';
 @ApiTags('sessions')
 @Controller('sessions')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class SessionsController {
-  constructor(private readonly _service: SessionsService) {}
+  constructor(private readonly _service: SessionsService) { }
   @Get()
   @ApiResponse({ status: 200, description: 'Ok' })
   async findAll(): Promise<SessionsModel[]> {
@@ -29,6 +33,20 @@ export class SessionsController {
     return await this._service.get(id);
   }
 
+  @Get('/archive/:id')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async archive(@Param('id') id: string): Promise<SessionsModel[]> {
+
+    return await this._service.archive(id);
+  }
+  @Get('/restore/:id')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async restore(@Param('id') id: string): Promise<SessionsModel[]> {
+
+    return await this._service.restore(id);
+  }
   @Post()
   @ApiResponse({
     status: 201,

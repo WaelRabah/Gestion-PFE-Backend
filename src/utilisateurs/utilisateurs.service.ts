@@ -74,14 +74,14 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
         );
       }
       this.generatePasswordReset(user);
+
       let subject = 'Password change request';
       let to = user.email;
       let from = process.env.FROM_EMAIL;
-      let link = 'https://www.google.com/' + user.resetPasswordToken;
+      let link = 'https://www.gestion-pfe.naaijazakaria.com/dev/réinitialisation-mdp/' + user.resetPasswordToken;
       let html = `<p>Hi ${user.username}</p>
                   <p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
                   <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
-      console.log(link)
       return await sgMail.send({ to, subject, from, html });
     } catch (error) {
       throw new HttpException(error.message, 400);

@@ -15,11 +15,11 @@ import SearchPfeDTO from './dtos/search-pfe.dto';
 import StatusChangeDTO from './dtos/status-change.dto';
 @Injectable()
 export class PfesService implements IBaseService<PfesModel> {
-  constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>) {}
+  constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>) { }
 
-  async create(doc: CreatePfesDto,filepath: string, status: Status, etudiant: UtilisateursModel): Promise<PfesModel> {
+  async create(doc: CreatePfesDto, filepath: string, status: Status, etudiant: UtilisateursModel): Promise<PfesModel> {
     try {
-      const newDoc = new this._model({...doc,filepath,status,studentId:etudiant.id});
+      const newDoc = new this._model({ ...doc, filepath, status, studentId: etudiant.id });
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -36,7 +36,7 @@ export class PfesService implements IBaseService<PfesModel> {
 
   async getAllUnassigned(): Promise<PfesModel[]> {
     try {
-      return await this._model.find({soutenanceId : undefined});
+      return await this._model.find({ soutenanceId: undefined });
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -67,7 +67,8 @@ export class PfesService implements IBaseService<PfesModel> {
     return await this._model.findByIdAndUpdate(id, newDoc);
   }
 
-  find(query: SearchPfeDTO) : Promise<PfesModel[]> {
-    return  this._model.find(query).exec();
+  find(query: SearchPfeDTO): Promise<PfesModel[]> {
+    return this._model.find(query).exec();
   }
+
 }

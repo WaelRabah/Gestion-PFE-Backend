@@ -10,23 +10,24 @@ export class PfesModel extends Document {
 
   @Prop({ type: String, required: true })
   public filepath: string;
-  
+
   @Prop({ type: String, required: true })
   public titre: string;
-  
+
   @Prop({ type: String, required: true })
   public nomEncadrantEntreprise: string;
-  
+
   @Prop({ type: Types.ObjectId })
   public soutenanceId: string;
-  
+
   @Prop({ type: Types.ObjectId })
   public studentId: string;
-  
-  @Prop({type: String, required: true})
+
+  @Prop({ type: String, required: true })
   public description: string;
 
-  @Prop({type: String, required: true})
+  @Prop({ type: String, required: true })
   public status: Status;
 }
 export const PfesSchema = SchemaFactory.createForClass(PfesModel);
+

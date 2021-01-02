@@ -14,5 +14,7 @@ export class SessionsModel extends Document {
   public president: string;
   @Prop({ type: Types.ObjectId, required: true })
   public presidentId: string;
+  @Prop({ type: Date })
+  public deletedAt: Date;
 }
 export const SessionsSchema = SchemaFactory.createForClass(SessionsModel);

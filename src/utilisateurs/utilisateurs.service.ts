@@ -51,7 +51,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let html = `<p>Hi ${newEtudiant.firstname} ${newEtudiant.lastname}</p>
                   <p>This is your Account in the INSAT Platfrom for the End Of Studies Internship</p>
                   <p>email: ${newEtudiant.email}</p>
-                  <p>password: ${newEtudiant.password}</p>
+                  <p>password: ${password}</p>
                   <p>NB: Please change your password </p>`;
       return await sgMail.send({ to, subject, from, html });
     } catch(err){

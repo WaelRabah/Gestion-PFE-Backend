@@ -15,11 +15,26 @@ import { AuthGuard } from '@nestjs/passport';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
+import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
 
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
 export class UtilisateursController {
   constructor(private readonly _service: UtilisateursService) {}
+
+
+  @Post('/newEtudiant')
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'The email is associated with an another account.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async createEtudiant(
+    @Body() doc: AjoutEtudiantDTO
+    ){
+    return this._service.createEtudiant(doc);
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get()

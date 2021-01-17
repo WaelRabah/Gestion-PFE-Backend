@@ -22,7 +22,9 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
 
   async create(doc: CreateSoutenancesDto): Promise<SoutenancesModel> {
     try {
+
       const newDoc = new this._model(doc);
+
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -30,32 +32,39 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
   }
   async getAll(): Promise<SoutenancesModel[]> {
     try {
+      return await this._model.find({ deletedAt: undefined });
+    } catch (error) {
+      throw new BadGatewayException(error);
+    }
+  }
+  async getAllArchived(): Promise<SoutenancesModel[]> {
+    try {
       return await this._model.find();
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
-  async getAllBySession( sessionId : string): Promise<any[]> {
+  async getAllBySession(sessionId: string): Promise<any[]> {
     try {
-      let soutenances: any[] = await this._model.find({sessionId : sessionId})
+      let soutenances: any[] = await this._model.find({ sessionId: sessionId, deletedAt: undefined })
       soutenances = await Promise.all(soutenances.map(async item => {
         const { encadrantId, presidentId, studentId, pfeId } = item
         const encadrant = await this._userService.get(encadrantId)
         const president = await this._userService.get(presidentId)
         const student = await this._userService.get(studentId)
-        const pfe =await this._pfeService.get(pfeId)
+        const pfe = await this._pfeService.get(pfeId)
 
         return {
-          original : item ,
-          displayable : {
-            respInsat: encadrant.firstname+" "+encadrant.lastname,
+          original: item,
+          displayable: {
+            respInsat: encadrant.firstname + " " + encadrant.lastname,
             respEntreprise: pfe.nomEncadrantEntreprise,
-            Examinateur: president.firstname+" "+president.lastname,
+            Examinateur: president.firstname + " " + president.lastname,
             entreprise: pfe.entreprise,
-            candidat: student.firstname+" "+student.lastname,
-            sujet : pfe.titre,
-            heure : item.heure ,
-            isItPublic : item.isItPublic
+            candidat: student.firstname + " " + student.lastname,
+            sujet: pfe.titre,
+            heure: item.heure,
+            isItPublic: item.isItPublic
           }
         }
       }))
@@ -67,13 +76,14 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
   }
 
   async get(id: string): Promise<SoutenancesModel> {
-    const doc = await this._model.findById(id);
+    const doc = await this._model.find({ _id: id, deletedAt: undefined });
     if (!doc) throw new NotFoundException('Doc not found');
 
     return await this._model.findById(id);
   }
 
   async delete(id: string): Promise<void> {
+
     const doc = await this._model.findById(id);
     if (!doc) throw new NotFoundException('Doc not found');
     await this._model.findByIdAndDelete(id);
@@ -86,5 +96,25 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc);
+  }
+  async archive(
+    id: string,
+    sessionId: string,
+  ): Promise<SoutenancesModel[]> {
+    const doc = await this.get(id);
+    if (!doc) throw new NotFoundException('Doc not found');
+    doc.deletedAt = new Date()
+    await this._model.findByIdAndUpdate(id, doc)
+    return await this._model.find({ deletedAt: undefined, sessionId: sessionId });
+  }
+  async restore(
+    id: string,
+    sessionId: string,
+  ): Promise<SoutenancesModel[]> {
+    const doc = await this.get(id);
+    if (!doc) throw new NotFoundException('Doc not found');
+    doc.deletedAt = undefined
+    await this._model.findByIdAndUpdate(id, doc)
+    return await this._model.find({ deletedAt: { $ne: undefined }, sessionId: sessionId });
   }
 }

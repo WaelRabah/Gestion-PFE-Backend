@@ -6,22 +6,30 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/guards/roles.guard';
 import CreateSoutenancesDto from './dtos/create-soutenances.dto';
 import UpdateSoutenancesDto from './dtos/update-soutenances.dto';
 import { SoutenancesModel } from './soutenances.model';
 import { SoutenancesService } from './soutenances.service';
 @ApiTags('soutenances')
 @Controller('soutenances')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class SoutenancesController {
-  constructor(private readonly _service: SoutenancesService) {}
+  constructor(private readonly _service: SoutenancesService) { }
   @Get()
   @ApiResponse({ status: 200, description: 'Ok' })
   async findAll(): Promise<SoutenancesModel[]> {
     return await this._service.getAll();
   }
-
+  @Get('/archived')
+  @ApiResponse({ status: 200, description: 'Ok' })
+  async findAllArchived(): Promise<SoutenancesModel[]> {
+    return await this._service.getAllArchived();
+  }
   @Get(':id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })
@@ -34,7 +42,20 @@ export class SoutenancesController {
   async findBySessionId(@Param('id') id: string): Promise<any[]> {
     return await this._service.getAllBySession(id);
   }
+  @Get('/archive/:id/:sessionId')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async archive(@Param('id') id: string, @Param('sessionId') sessionId: string): Promise<any[]> {
 
+    return await this._service.archive(id, sessionId);
+  }
+  @Get('/restore/:id/:sessionId')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async restore(@Param('id') id: string, @Param('sessionId') sessionId: string): Promise<any[]> {
+
+    return await this._service.restore(id, sessionId);
+  }
   @Post()
   @ApiResponse({
     status: 201,

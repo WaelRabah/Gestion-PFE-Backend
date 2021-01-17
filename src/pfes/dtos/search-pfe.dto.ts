@@ -24,6 +24,9 @@ class SearchPfeDTO {
   @IsOptional()
   @ApiProperty()
   public status: Status;
+
+  @IsOptional()
+  public studentId: string;
 }
 
 export default SearchPfeDTO;

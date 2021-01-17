@@ -71,4 +71,10 @@ export class PfesService implements IBaseService<PfesModel> {
     return this._model.find(query).exec();
   }
 
+  async uploadRapport(rapportFilepath: string,etudiant:UtilisateursModel){
+    const pfe = await this._model.findOne({studentId:etudiant.id}).exec();
+    pfe.rapportFilepath=rapportFilepath;
+    return pfe.save();
+  }
+
 }

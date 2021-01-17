@@ -57,6 +57,25 @@ export class PfesController {
   @Post()
   @UseInterceptors(FileInterceptor('file',{
     storage: diskStorage({
+      destination: './uploads/rapports-pfes/',
+      filename: editFileName
+    })
+  }))
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: CreatePfesDto })
+  async uploadRapport(@UploadedFile() file, @Request() req): Promise<PfesModel> {
+    return await this._service.uploadRapport(file.path,req.user);
+  }
+
+  @Roles(Role.Etudiant)
+  @Post()
+  @UseInterceptors(FileInterceptor('file',{
+    storage: diskStorage({
       destination: './uploads/sujets-pfes/',
       filename: editFileName
     })

@@ -28,5 +28,8 @@ export class PfesModel extends Document {
 
   @Prop({type: String, required: true})
   public status: Status;
+
+  @Prop({type: String})
+  public rapportFilepath: string;
 }
 export const PfesSchema = SchemaFactory.createForClass(PfesModel);

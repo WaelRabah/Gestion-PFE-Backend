@@ -55,6 +55,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
                   <p>NB: Please change your password </p>`;
       return await sgMail.send({ to, subject, from, html });
     } catch(err){
+      console.log(err)
       throw new HttpException(err.message, 400);
     }
   }
@@ -118,6 +119,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
                   <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
       return await sgMail.send({ to, subject, from, html });
     } catch (error) {
+      console.log(error)
       throw new HttpException(error.message, 400);
     }
   }
@@ -148,6 +150,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
                   <p>This is a confirmation that the password for your account ${user.email} has just been changed.</p>`;
       return await sgMail.send({ to, subject, from, html });
     } catch (error) {
+      console.log(error)
       throw new HttpException(error.message, 400);
     }
   }

@@ -22,6 +22,10 @@ class CreatePfesDto {
   @IsAlpha()
   @ApiProperty()
   public description: string;
+  @IsNotEmpty()
+  @IsMongoId()
+  @ApiProperty()
+  public studentId: string;
 }
 
 export default CreatePfesDto;

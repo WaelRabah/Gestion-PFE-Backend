@@ -68,6 +68,18 @@ export class UtilisateursController {
     return await this._service.create(doc);
   }
 
+  @Post('registerAll')
+  @ApiResponse({
+    status: 201,
+    description: 'The recordq have been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: CreateUtilisateursDto })
+  async createAll(@Body() doc: CreateUtilisateursDto[]) {
+    return await this._service.createAll(doc);
+  }
+
   @ApiResponse({
     status: 201,
     description: 'Email sent to the user',

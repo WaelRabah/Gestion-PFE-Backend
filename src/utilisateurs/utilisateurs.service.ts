@@ -78,6 +78,15 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     }
   }
 
+  async createAll(docs: CreateUtilisateursDto[]) {
+    docs.forEach(doc => {
+      try {
+      this.create(doc);
+    } catch (error) {
+      console.log('That did not go well.')
+    }
+    }); } 
+
   async generatePasswordReset(user: UtilisateursModel): Promise<void> {
     try {
       user.resetPasswordToken = crypto.randomBytes(20).toString('hex');

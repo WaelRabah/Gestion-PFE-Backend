@@ -1,7 +1,7 @@
 import { IsEmail, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-class AjoutEtudiantDTO {
+class AjoutEnseignantDTO {
     
     @IsNotEmpty()
     @IsString()
@@ -16,12 +16,12 @@ class AjoutEtudiantDTO {
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
-    niveau:string;
+    departement:string;
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
-    filiere:string;
+    grade:string;
 
     @IsNotEmpty()
     @IsEmail()
@@ -38,5 +38,4 @@ class AjoutEtudiantDTO {
     @ApiProperty()
     username:string;
 }
-
-export default AjoutEtudiantDTO;
+export default AjoutEnseignantDTO;

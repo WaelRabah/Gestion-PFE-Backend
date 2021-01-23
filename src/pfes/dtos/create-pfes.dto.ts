@@ -1,5 +1,6 @@
-import { IsAlpha, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsAlpha, IsArray, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 class CreatePfesDto {
   @IsNotEmpty()
   @IsString()
@@ -22,10 +23,13 @@ class CreatePfesDto {
   @IsAlpha()
   @ApiProperty()
   public description: string;
-  @IsNotEmpty()
-  @IsMongoId()
-  @ApiProperty()
-  public studentId: string;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @Transform(
+    e=>JSON.parse(e)
+  )
+  public enseignantsEncadrants: string[];
 }
 
 export default CreatePfesDto;

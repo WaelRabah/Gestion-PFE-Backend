@@ -1,3 +1,4 @@
+import { UserInfoDTO } from './dtos/user-info.dto';
 import {
   Body,
   Controller,
@@ -59,7 +60,7 @@ export class UtilisateursController {
 
   @Get(':role')
   @ApiResponse({ status: 200, description: 'Ok' })
-  async findOnRole(@Param('role') role: string): Promise<UtilisateursModel[]> {
+  async findOnRole(@Param('role') role: string): Promise<UserInfoDTO[]> {
     return await this._service.getOnRole(role);
   }
 

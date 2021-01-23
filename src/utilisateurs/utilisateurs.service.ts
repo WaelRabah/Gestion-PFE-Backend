@@ -12,6 +12,7 @@ import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
 import { Role } from './enums/role.enum';
+import { UserInfoDTO } from './dtos/user-info.dto';
 @Injectable()
 export class UtilisateursService implements IBaseService<UtilisateursModel> {
   constructor(
@@ -176,9 +177,9 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     return doc;
   }
 
-  async getOnRole(role: string): Promise<UtilisateursModel[]> {
+  async getOnRole(role: string): Promise<UserInfoDTO[]> {
     const roleAttr= role==Role.Etudiant? Role.Etudiant:Role.Enseignant==role?Role.Enseignant:Role.Administrateur;
-    const doc = await this._model.find({role:roleAttr});
+    const doc = await this._model.find({role:roleAttr},'_id firstname lastname');
     if (!doc) throw new NotFoundException('Doc not found');
     return doc;
   }

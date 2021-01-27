@@ -20,7 +20,7 @@ export class PfesModel extends Document {
   @Prop({ type: Types.ObjectId })
   public soutenanceId: string;
 
-  @Prop({ type: Types.ObjectId })
+  @Prop({ type: Types.ObjectId, ref:'Utilisateurs' })
   public studentId: string;
 
   @Prop({ type: String, required: true })

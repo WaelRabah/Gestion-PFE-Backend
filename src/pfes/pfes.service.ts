@@ -101,4 +101,8 @@ export class PfesService implements IBaseService<PfesModel> {
     return this._model.exists({studentId, status : {$in: [Status.Accepte,Status.Attente]}})
   }
 
+  async findEncadrementEnseignant(enseignantId:string): Promise<PfesModel[]> {
+    return this._model.find({enseignantsEncadrants:enseignantId}).populate('studentId','firstname lastname').exec();
+  }
+
 }

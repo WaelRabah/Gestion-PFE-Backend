@@ -162,4 +162,10 @@ export class PfesController {
     return await this._service.canAddRapport(id);
   }
 
+  @Roles(Role.Enseignant)
+  @Get('encadrement/:id')
+  async getEncadrements(@Param('id') enseignantId:string) {
+    return await this._service.findEncadrementEnseignant(enseignantId)
+  }
+
 }

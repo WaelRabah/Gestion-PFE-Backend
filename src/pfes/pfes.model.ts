@@ -33,6 +33,9 @@ export class PfesModel extends Document {
 
   @Prop({type: String})
   public rapportFilepath: string;
+
+  @Prop({type: Array})
+  public enseignantsEncadrants: string[];
 }
 export const PfesSchema = SchemaFactory.createForClass(PfesModel);
 

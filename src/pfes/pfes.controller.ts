@@ -1,3 +1,4 @@
+import { FileCheckInterceptor } from './../interceptors/filecheck-interceptor';
 import { AuthGuard } from '@nestjs/passport';
 import {
   Body,
@@ -54,7 +55,7 @@ export class PfesController {
   }
 
   @Roles(Role.Etudiant)
-  @Post()
+  @Put('rapport')
   @UseInterceptors(FileInterceptor('file',{
     storage: diskStorage({
       destination: './uploads/rapports-pfes/',
@@ -79,7 +80,7 @@ export class PfesController {
       destination: './uploads/sujets-pfes/',
       filename: editFileName
     })
-  }))
+  }),FileCheckInterceptor)
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -88,8 +89,7 @@ export class PfesController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreatePfesDto })
   async create(@Body() doc :CreatePfesDto, @UploadedFile() file, @Request() req): Promise<PfesModel> {
-    console.log(doc)
-    return await this._service.create(doc,file.path,Status.Attente,req.user);
+    return await this._service.create(doc,file.path,req.user);
   }
 
   @Delete(':id')
@@ -148,6 +148,24 @@ export class PfesController {
     @Body() query: SearchPfeDTO
   ) : Promise<PfesModel[]> {
     return this._service.find(query);
+  }
+
+  @Roles(Role.Etudiant)
+  @Get('check-ajouter-sujet/:id')
+   async checkAjouterSujet(@Param('id') id: string) : Promise<boolean>  {
+    return !await this._service.cannotAddSujet(id);
+  }
+
+  @Roles(Role.Etudiant)
+  @Get('check-ajouter-rapport/:id')
+  async checkAjouterRapport(@Param('id') id: string): Promise<boolean> {
+    return await this._service.canAddRapport(id);
+  }
+
+  @Roles(Role.Enseignant)
+  @Get('encadrement/:id')
+  async getEncadrements(@Param('id') enseignantId:string) {
+    return await this._service.findEncadrementEnseignant(enseignantId)
   }
 
 }

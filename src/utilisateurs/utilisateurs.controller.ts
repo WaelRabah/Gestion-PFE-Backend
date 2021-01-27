@@ -1,3 +1,4 @@
+import { UserInfoDTO } from './dtos/user-info.dto';
 import {
   Body,
   Controller,
@@ -17,6 +18,7 @@ import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
 import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
+import AjoutEnseignantDTO from './dtos/ajout-enseignant.dto';
 
 @ApiTags('utilisateurs')
 @Controller('utilisateurs')
@@ -34,7 +36,20 @@ export class UtilisateursController {
   async createEtudiant(
     @Body() doc: AjoutEtudiantDTO
     ){
-    return this._service.createEtudiant(doc);
+    return this._service.createUser(doc);
+  }
+
+  @Post('/newEnseignant')
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'The email is associated with an another account.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async createEnseignant(
+    @Body() doc: AjoutEnseignantDTO
+    ){
+    return this._service.createUser(doc);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -51,7 +66,7 @@ export class UtilisateursController {
   }
   @Get('/role')
   @ApiResponse({ status: 200, description: 'Ok' })
-  async findOnRole(@Query('role') role : string): Promise<UtilisateursModel[]> {
+  async findOnRole(@Query('role') role : string): Promise<UserInfoDTO[]> {
     return await this._service.getOnRole(role);
   }
 
@@ -67,6 +82,18 @@ export class UtilisateursController {
   @ApiBody({ type: CreateUtilisateursDto })
   async create(@Body() doc: CreateUtilisateursDto) {
     return await this._service.create(doc);
+  }
+
+  @Post('registerAll')
+  @ApiResponse({
+    status: 201,
+    description: 'The recordq have been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: CreateUtilisateursDto })
+  async createAll(@Body() doc: CreateUtilisateursDto[]) {
+    return await this._service.createAll(doc);
   }
 
   @ApiResponse({

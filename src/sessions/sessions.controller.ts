@@ -26,6 +26,14 @@ export class SessionsController {
     return await this._service.getAll();
   }
 
+
+  @Get('pdf/:id')
+  async download(
+    @Param('id') id: string
+  ){
+    return await this._service.createPDF(id);
+  }
+
   @Get(':id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })
@@ -77,4 +85,6 @@ export class SessionsController {
   ): Promise<SessionsModel> {
     return await this._service.update(id, doc);
   }
+
+
 }

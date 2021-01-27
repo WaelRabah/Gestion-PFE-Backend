@@ -92,7 +92,9 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
   async findByEmail(email: string): Promise<UtilisateursModel> {
     return await this._model.findOne({ email });
   }
-
+  async findById(id: string): Promise<UtilisateursModel> {
+    return await this._model.findById(id);
+  }
   comparePassword(pass: string, password: string) {
     return bcrypt.compareSync(pass, password);
   }
@@ -165,6 +167,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
 
   async get(id: string): Promise<UtilisateursModel> {
     const doc = await this._model.findById(id);
+    console.log(doc)
     if (!doc) throw new NotFoundException('Doc not found');
 
     return doc;

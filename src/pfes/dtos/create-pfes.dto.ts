@@ -1,5 +1,6 @@
-import { IsAlpha, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsAlpha, IsMongoId, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 class CreatePfesDto {
   @IsNotEmpty()
   @IsString()
@@ -23,9 +24,9 @@ class CreatePfesDto {
   @ApiProperty()
   public description: string;
   @IsNotEmpty()
-  @IsMongoId()
+  @IsObject()
   @ApiProperty()
-  public studentId: string;
+  public student: UtilisateursModel;
 }
 
 export default CreatePfesDto;

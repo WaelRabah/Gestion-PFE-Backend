@@ -88,6 +88,7 @@ export class PfesController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreatePfesDto })
   async create(@Body() doc :CreatePfesDto, @UploadedFile() file, @Request() req): Promise<PfesModel> {
+    console.log(doc)
     return await this._service.create(doc,file.path,Status.Attente,req.user);
   }
 

@@ -28,7 +28,15 @@ export class PfesService implements IBaseService<PfesModel> {
 
   async getAll(): Promise<PfesModel[]> {
     try {
-      return await this._model.find();
+      const pfes=await this._model.find();
+      const results=pfes.map((pfe : PfesModel)=>{
+        const result =pfe
+        .populate('student')
+        .populate('soutenance')
+        .execPopulate()
+        return result
+      })
+      return Promise.all(results)
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -36,7 +44,16 @@ export class PfesService implements IBaseService<PfesModel> {
 
   async getAllUnassigned(): Promise<PfesModel[]> {
     try {
-      return await this._model.find({ soutenanceId: undefined });
+      const pfes = await this._model.find({ soutenanceId: undefined });
+
+      const results=pfes.map((pfe : PfesModel)=>{
+        const result =pfe
+        .populate('student')
+        .populate('soutenance')
+        .execPopulate()
+        return result
+      })
+      return Promise.all(results)
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -44,9 +61,13 @@ export class PfesService implements IBaseService<PfesModel> {
 
   async get(id: string): Promise<PfesModel> {
     const doc = await this._model.findById(id);
+    const result = await doc
+    .populate('student')
+    .populate('soutenance')
+    .execPopulate()
     if (!doc) throw new NotFoundException('Doc not found');
 
-    return await this._model.findById(id);
+    return result;
   }
 
   async delete(id: string): Promise<void> {
@@ -67,8 +88,16 @@ export class PfesService implements IBaseService<PfesModel> {
     return await this._model.findByIdAndUpdate(id, newDoc);
   }
 
-  find(query: SearchPfeDTO): Promise<PfesModel[]> {
-    return this._model.find(query).exec();
+ async find(query: SearchPfeDTO): Promise<PfesModel[]> {
+   const pfes = await this._model.find(query).exec()
+   const results = pfes.map((pfe)=>{
+    const result = pfe
+    .populate('student')
+    .populate('soutenance')
+    .execPopulate()
+    return result
+  })
+    return Promise.all(results);
   }
 
   async uploadRapport(rapportFilepath: string,etudiant:UtilisateursModel){

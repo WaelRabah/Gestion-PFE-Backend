@@ -32,7 +32,21 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
   }
   async getAll(): Promise<SoutenancesModel[]> {
     try {
-      return await this._model.find({ deletedAt: undefined });
+      const soutenances = await this._model.find({ deletedAt: undefined });
+      const results = await soutenances.map((soutenance) => {
+        const result = soutenance
+          .populate('president')
+          .populate('encadrant')
+          .populate('rapporteur')
+          .populate('student')
+          .populate('pfe')
+          .execPopulate()
+        return result
+      })
+
+
+      return Promise.all(results);
+
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -46,40 +60,37 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
   }
   async getAllBySession(sessionId: string): Promise<any[]> {
     try {
-      let soutenances: any[] = await this._model.find({ sessionId: sessionId, deletedAt: undefined })
-      soutenances = await Promise.all(soutenances.map(async item => {
-        const { encadrantId, presidentId, studentId, pfeId } = item
-        const encadrant = await this._userService.get(encadrantId)
-        const president = await this._userService.get(presidentId)
-        const student = await this._userService.get(studentId)
-        const pfe = await this._pfeService.get(pfeId)
+      let soutenances = await this._model.find({ sessionId: sessionId, deletedAt: undefined })
+      const results = await soutenances.map((soutenance) => {
+        const result = soutenance
+          .populate('president')
+          .populate('encadrant')
+          .populate('rapporteur')
+          .populate('student')
+          .populate('pfe')
+          .execPopulate()
+        return result
+      })
 
-        return {
-          original: item,
-          displayable: {
-            respInsat: encadrant.firstname + " " + encadrant.lastname,
-            respEntreprise: pfe.nomEncadrantEntreprise,
-            Examinateur: president.firstname + " " + president.lastname,
-            entreprise: pfe.entreprise,
-            candidat: student.firstname + " " + student.lastname,
-            sujet: pfe.titre,
-            heure: item.heure,
-            isItPublic: item.isItPublic
-          }
-        }
-      }))
 
-      return soutenances;
+      return Promise.all(results);;
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
   async get(id: string): Promise<SoutenancesModel> {
-    const doc = await this._model.find({ _id: id, deletedAt: undefined });
+    const doc = await this._model.findOne({ _id: id, deletedAt: undefined })
+    const result = await doc
+      .populate('president')
+      .populate('encadrant')
+      .populate('rapporteur')
+      .populate('student')
+      .populate('pfe')
+      .execPopulate()
     if (!doc) throw new NotFoundException('Doc not found');
 
-    return await this._model.findById(id);
+    return result;
   }
 
   async delete(id: string): Promise<void> {

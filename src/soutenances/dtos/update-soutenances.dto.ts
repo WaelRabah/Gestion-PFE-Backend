@@ -1,11 +1,10 @@
-import { IsBoolean, IsMongoId, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsMongoId, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 import { PfesModel } from 'src/pfes/pfes.model';
 class UpdateSoutenancesDto {
-  @ApiProperty()
-  @IsObject()
-  public encadrant: UtilisateursModel;
+  @IsArray()
+  public enseignantsEncadrants: UtilisateursModel[];
 
   @IsString()
   @ApiProperty()
@@ -20,7 +19,6 @@ class UpdateSoutenancesDto {
   public rapporteur: UtilisateursModel;
   @IsBoolean()
   @ApiProperty()
-  @IsObject()
   public isItPublic: boolean;
 
   @ApiProperty()

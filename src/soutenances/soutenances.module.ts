@@ -12,11 +12,10 @@ import { SessionsModule } from 'src/sessions/sessions.module';
     MongooseModule.forFeature([
       { name: 'Soutenances', schema: SoutenancesSchema },
     ]),
-    UtilisateursModule,
-    PfesModule,
     SessionsModule
   ],
   controllers: [SoutenancesController],
   providers: [SoutenancesService],
+  exports : [SoutenancesService]
 })
 export class SoutenancesModule {}

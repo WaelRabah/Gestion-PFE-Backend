@@ -67,7 +67,7 @@ export class SoutenancesController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreateSoutenancesDto })
   async create(@Body() doc : CreateSoutenancesDto,@Param('sessionId') sessionId : string): Promise<SoutenancesModel> {
-    console.log(doc)
+
     return await this._service.create(doc,sessionId);
   }
 

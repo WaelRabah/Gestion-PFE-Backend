@@ -35,7 +35,6 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
           403,
         );
       }
-      console.log(doc)
       const password = Math.random().toString(36).slice(-8);
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new this._model({
@@ -174,15 +173,15 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
 
   async get(id: string): Promise<UtilisateursModel> {
     const doc = await this._model.findById(id);
-    console.log(doc)
     if (!doc) throw new NotFoundException('Doc not found');
 
     return doc;
   }
 
-  async getOnRole(role: string): Promise<UserInfoDTO[]> {
+  async getOnRole(role: string): Promise<UtilisateursModel[]> {
+
     const roleAttr= role==Role.Etudiant? Role.Etudiant:Role.Enseignant==role?Role.Enseignant:Role.Administrateur;
-    const doc = await this._model.find({role:roleAttr},'_id firstname lastname');
+    const doc = await this._model.find({role:roleAttr});
     if (!doc) throw new NotFoundException('Doc not found');
     return doc;
   }

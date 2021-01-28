@@ -15,12 +15,13 @@ import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 import SearchPfeDTO from './dtos/search-pfe.dto';
 import StatusChangeDTO from './dtos/status-change.dto';
 import * as fs from 'fs';
+import { SoutenancesService } from 'src/soutenances/soutenances.service';
 @Injectable()
 export class PfesService implements IBaseService<PfesModel> {
-  constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>) { }
+  constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>, private readonly _soutenanceService: SoutenancesService) { }
 
   async create(doc: CreatePfesDto, filepath: string, etudiant: UtilisateursModel): Promise<PfesModel> {
-    
+
     try {
       let sujet: PfesModel = await this._model.findOne({ studentId: etudiant.id });
       if (sujet) {
@@ -50,7 +51,8 @@ export class PfesService implements IBaseService<PfesModel> {
           .execPopulate()
         return result
       })
-      return Promise.all(results)
+     
+      return await Promise.all(results)
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -58,7 +60,16 @@ export class PfesService implements IBaseService<PfesModel> {
 
   async getAllUnassigned(): Promise<PfesModel[]> {
     try {
-      const pfes = await this._model.find({ soutenanceId: undefined });
+      const _pfes = (await this._soutenanceService.getAll())
+        .map(item => item.pfe._id)
+
+      const pfes =await Promise.all((await this._model.find({ _id : { $nin : _pfes } }))
+                    .map(async item=>{
+                      const res = await item.populate('student')
+                      .execPopulate()
+                     
+                      return res
+                    }))
 
       const results = pfes.map((pfe: PfesModel) => {
         const result = pfe

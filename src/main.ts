@@ -18,7 +18,7 @@ async function bootstrap() {
     .addTag('soutenances')
     .addTag('annee-universitaires')
     .addTag('suggest-pfe')
-    .addTag('utilisateurs')
+    .addTag('Utilisateurs')
     .addTag('authentification')
     .build();
   const document = SwaggerModule.createDocument(app, options);

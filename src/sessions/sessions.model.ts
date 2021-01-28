@@ -11,9 +11,9 @@ export class SessionsModel extends Document {
   public filiere: string;
   @Prop({ type: Number, required: true })
   public numero: number;
-  @Prop([{type : SchemaTypes.ObjectId,ref : 'SoutenancesModel'}])
+  @Prop([{type : SchemaTypes.ObjectId,ref : 'Soutenances'}])
   public soutenances: SoutenancesModel[];
-  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'UtilisateursModel' })
+  @Prop({ type: SchemaTypes.ObjectId ,ref : 'Utilisateurs' })
   public president: UtilisateursModel;
   @Prop({ type: Date })
   public deletedAt: Date;

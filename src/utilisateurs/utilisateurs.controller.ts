@@ -20,8 +20,8 @@ import ResetPasswordDTO from './dtos/reset-password.dto';
 import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
 import AjoutEnseignantDTO from './dtos/ajout-enseignant.dto';
 
-@ApiTags('utilisateurs')
-@Controller('utilisateurs')
+@ApiTags('Utilisateurs')
+@Controller('Utilisateurs')
 export class UtilisateursController {
   constructor(private readonly _service: UtilisateursService) {}
 

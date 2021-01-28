@@ -11,20 +11,24 @@ import UpdateSoutenancesDto from './dtos/update-soutenances.dto';
 import CreateSoutenancesDto from './dtos/create-soutenances.dto';
 import { UtilisateursService } from 'src/utilisateurs/utilisateurs.service';
 import { PfesService } from 'src/pfes/pfes.service';
+import { SessionsService } from 'src/sessions/sessions.service';
 @Injectable()
-export class SoutenancesService implements IBaseService<SoutenancesModel> {
+export class SoutenancesService  {
   constructor(
     @InjectModel('Soutenances')
     private readonly _model: Model<SoutenancesModel>,
     private readonly _userService: UtilisateursService,
-    private readonly _pfeService: PfesService
+    private readonly _pfeService: PfesService,
+    private readonly _sessService: SessionsService
   ) { }
 
-  async create(doc: CreateSoutenancesDto): Promise<SoutenancesModel> {
+  async create(doc: CreateSoutenancesDto,sessionId : string): Promise<SoutenancesModel> {
     try {
-
+      const session =await this._sessService.get(sessionId)
+      
       const newDoc = new this._model(doc);
-
+      session.soutenances.push(newDoc)
+      session.save()
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);

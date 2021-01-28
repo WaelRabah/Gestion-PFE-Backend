@@ -17,9 +17,8 @@ class UpdatePfesDto {
   @IsAlpha()
   @ApiProperty()
   public nomEncadrantEntreprise: string;
-  @IsObject()
-  @IsNotEmpty()
-  public soutenance: SoutenancesModel;
+
+
 
   @IsAlphanumeric()
   @ApiProperty()

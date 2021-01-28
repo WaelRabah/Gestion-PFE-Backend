@@ -19,10 +19,7 @@ export class PfesModel extends Document {
   @Prop({ type: String, required: true })
   public nomEncadrantEntreprise: string;
 
-  @Prop({ type: SchemaTypes.ObjectId })
-  public soutenance: SoutenancesModel;
-
-  @Prop({ type: SchemaTypes.ObjectId })
+  @Prop({ type: SchemaTypes.ObjectId ,ref : 'Utilisateurs' })
   public student: UtilisateursModel;
 
   @Prop({ type: String, required: true })
@@ -34,8 +31,8 @@ export class PfesModel extends Document {
   @Prop({type: String})
   public rapportFilepath: string;
 
-  @Prop({type: Array})
-  public enseignantsEncadrants: string[];
+  @Prop({type: [{ type: SchemaTypes.ObjectId ,ref : 'Utilisateurs'}]})
+  public enseignantsEncadrants: UtilisateursModel[];
 }
 export const PfesSchema = SchemaFactory.createForClass(PfesModel);
 

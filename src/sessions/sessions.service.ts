@@ -9,7 +9,7 @@ import { SessionsModel } from './sessions.model';
 import { InjectModel } from '@nestjs/mongoose';
 import UpdateSessionsDto from './dtos/update-sessions.dto';
 import CreateSessionsDto from './dtos/create-sessions.dto';
-import * as pdf from 'pdfkit';
+import * as pdf from 'pdfkit'
 import * as fs from 'fs';
 
 @Injectable()
@@ -50,18 +50,94 @@ export class SessionsService implements IBaseService<SessionsModel> {
 
   async getAll(): Promise<SessionsModel[]> {
     try {
-      return await this._model.find({ deletedAt: undefined });
+      const sessions = await this._model.find({ deletedAt: undefined })
+      const results = sessions.map(async (session)=>{
+        console.log(session)
+        const result =await session
+        .populate('soutenances')
+        .populate('president')
+        .execPopulate()
+        
+        result.soutenances = await Promise.all(
+          result
+        .soutenances
+        .map(
+          (item)=>{
+          const res=  item
+            .populate('president')
+            .populate('encadrant')
+            .populate('rapporteur')
+            .populate('student')
+            .populate('pfe')
+            .execPopulate()
+            return res
+          }
+        )
+        )
+        result.soutenances = await Promise.all(
+          result
+        .soutenances
+        .map(
+          async (item)=>{
+          item.pfe = await item
+          .pfe
+          .populate('enseignantsEncadrants')
+          .execPopulate()
+         
+          return item
+          }
+        )
+        )
+
+        
+        return result
+      })
+      console.log(await Promise.all(results))
+      return Promise.all(results);
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
   async get(id: string): Promise<SessionsModel> {
-    const doc = await this._model.find({ _id: id, deletedAt: undefined });
-
+    const doc = await this._model.findOne({ _id: id, deletedAt: undefined });
+    const result =await doc
+    .populate('soutenances')
+    .populate('president')
+    .execPopulate()
+    result.soutenances = await Promise.all(
+      result
+    .soutenances
+    .map(
+      (item)=>{
+      const res=  item
+        .populate('president')
+        .populate('encadrant')
+        .populate('rapporteur')
+        .populate('student')
+        .populate('pfe')
+        .execPopulate()
+        return res
+      }
+    )
+    )
+    result.soutenances = await Promise.all(
+      result
+    .soutenances
+    .map(
+      async (item)=>{
+      item.pfe = await item
+      .pfe
+      .populate('enseignantsEncadrants')
+      .execPopulate()
+      console.log('shiit',item.pfe.enseignantsEncadrants[0])
+      return item
+      }
+    )
+    )
     if (!doc) throw new NotFoundException('Document not found');
 
-    return await this._model.findById(id);
+    return await result;
   }
 
   async delete(id: string): Promise<void> {

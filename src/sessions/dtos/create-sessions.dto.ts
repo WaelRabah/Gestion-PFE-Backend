@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 class CreateSessionsDto {
@@ -14,6 +14,7 @@ class CreateSessionsDto {
   @IsNumber()
   @ApiProperty()
   public numero: number;
+  @IsObject()
   @ApiProperty()
   public president: UtilisateursModel;
 }

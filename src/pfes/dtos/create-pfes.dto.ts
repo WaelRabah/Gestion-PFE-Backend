@@ -24,7 +24,15 @@ class CreatePfesDto {
   @IsAlpha()
   @ApiProperty()
   public description: string;
-
+  @IsObject()
+  @IsNotEmpty()
+  @Transform(
+    e=>{
+  
+      return JSON.parse(e)
+    }
+  )
+  public student: UtilisateursModel;
   @IsArray()
   @ArrayNotEmpty()
   @Transform(

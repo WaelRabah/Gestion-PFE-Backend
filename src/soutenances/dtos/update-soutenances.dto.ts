@@ -1,36 +1,35 @@
-import { IsBoolean, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsMongoId, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
+import { PfesModel } from 'src/pfes/pfes.model';
 class UpdateSoutenancesDto {
-  @IsMongoId()
-
   @ApiProperty()
-  public encadrantId: string;
+  @IsObject()
+  public encadrant: UtilisateursModel;
 
   @IsString()
   @ApiProperty()
   public heure: string;
-  @IsMongoId()
 
   @ApiProperty()
-  public presidentId: string;
-  @IsMongoId()
+  @IsObject()
+  public president: UtilisateursModel;
 
   @ApiProperty()
-  public rapporteurId: string;
-  @IsMongoId()
-
-  @ApiProperty()
-  public pfeId: string;
-  @IsMongoId()
-  @ApiProperty()
-  public studentId: string;
-
+  @IsObject()
+  public rapporteur: UtilisateursModel;
   @IsBoolean()
   @ApiProperty()
+  @IsObject()
   public isItPublic: boolean;
-  @IsMongoId()
+
   @ApiProperty()
-  public sessionId: string;
+  @IsObject()
+  public student: UtilisateursModel;
+
+  @ApiProperty()
+  @IsObject()
+  public pfe: PfesModel;
 }
 
 export default UpdateSoutenancesDto;

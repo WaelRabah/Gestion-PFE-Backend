@@ -11,20 +11,24 @@ import UpdateSoutenancesDto from './dtos/update-soutenances.dto';
 import CreateSoutenancesDto from './dtos/create-soutenances.dto';
 import { UtilisateursService } from 'src/utilisateurs/utilisateurs.service';
 import { PfesService } from 'src/pfes/pfes.service';
+import { SessionsService } from 'src/sessions/sessions.service';
 @Injectable()
-export class SoutenancesService implements IBaseService<SoutenancesModel> {
+export class SoutenancesService  {
   constructor(
     @InjectModel('Soutenances')
     private readonly _model: Model<SoutenancesModel>,
     private readonly _userService: UtilisateursService,
-    private readonly _pfeService: PfesService
+    private readonly _pfeService: PfesService,
+    private readonly _sessService: SessionsService
   ) { }
 
-  async create(doc: CreateSoutenancesDto): Promise<SoutenancesModel> {
+  async create(doc: CreateSoutenancesDto,sessionId : string): Promise<SoutenancesModel> {
     try {
-
+      const session =await this._sessService.get(sessionId)
+      
       const newDoc = new this._model(doc);
-
+      session.soutenances.push(newDoc)
+      session.save()
       return await newDoc.save();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -32,7 +36,21 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
   }
   async getAll(): Promise<SoutenancesModel[]> {
     try {
-      return await this._model.find({ deletedAt: undefined });
+      const soutenances = await this._model.find({ deletedAt: undefined });
+      const results = await soutenances.map((soutenance) => {
+        const result = soutenance
+          .populate('president')
+          .populate('encadrant')
+          .populate('rapporteur')
+          .populate('student')
+          .populate('pfe')
+          .execPopulate()
+        return result
+      })
+
+
+      return Promise.all(results);
+
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -46,40 +64,37 @@ export class SoutenancesService implements IBaseService<SoutenancesModel> {
   }
   async getAllBySession(sessionId: string): Promise<any[]> {
     try {
-      let soutenances: any[] = await this._model.find({ sessionId: sessionId, deletedAt: undefined })
-      soutenances = await Promise.all(soutenances.map(async item => {
-        const { encadrantId, presidentId, studentId, pfeId } = item
-        const encadrant = await this._userService.get(encadrantId)
-        const president = await this._userService.get(presidentId)
-        const student = await this._userService.get(studentId)
-        const pfe = await this._pfeService.get(pfeId)
+      let soutenances = await this._model.find({ sessionId: sessionId, deletedAt: undefined })
+      const results = await soutenances.map((soutenance) => {
+        const result = soutenance
+          .populate('president')
+          .populate('encadrant')
+          .populate('rapporteur')
+          .populate('student')
+          .populate('pfe')
+          .execPopulate()
+        return result
+      })
 
-        return {
-          original: item,
-          displayable: {
-            respInsat: encadrant.firstname + " " + encadrant.lastname,
-            respEntreprise: pfe.nomEncadrantEntreprise,
-            Examinateur: president.firstname + " " + president.lastname,
-            entreprise: pfe.entreprise,
-            candidat: student.firstname + " " + student.lastname,
-            sujet: pfe.titre,
-            heure: item.heure,
-            isItPublic: item.isItPublic
-          }
-        }
-      }))
 
-      return soutenances;
+      return Promise.all(results);;
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
   async get(id: string): Promise<SoutenancesModel> {
-    const doc = await this._model.find({ _id: id, deletedAt: undefined });
+    const doc = await this._model.findOne({ _id: id, deletedAt: undefined })
+    const result = await doc
+      .populate('president')
+      .populate('encadrant')
+      .populate('rapporteur')
+      .populate('student')
+      .populate('pfe')
+      .execPopulate()
     if (!doc) throw new NotFoundException('Doc not found');
 
-    return await this._model.findById(id);
+    return result;
   }
 
   async delete(id: string): Promise<void> {

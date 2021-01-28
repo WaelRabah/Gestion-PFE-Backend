@@ -25,17 +25,19 @@ export class SoutenancesController {
   async findAll(): Promise<SoutenancesModel[]> {
     return await this._service.getAll();
   }
+  @Get(':id')
+  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'doc does not exist' })
+  async findById(@Param('id') id: string): Promise<SoutenancesModel> {
+    
+    return await this._service.get(id);
+  }
   @Get('/archived')
   @ApiResponse({ status: 200, description: 'Ok' })
   async findAllArchived(): Promise<SoutenancesModel[]> {
     return await this._service.getAllArchived();
   }
-  @Get(':id')
-  @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
-  @ApiResponse({ status: 404, description: 'doc does not exist' })
-  async findById(@Param('id') id: string): Promise<SoutenancesModel> {
-    return await this._service.get(id);
-  }
+
   @Get('/session/:id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })
@@ -56,7 +58,7 @@ export class SoutenancesController {
 
     return await this._service.restore(id, sessionId);
   }
-  @Post()
+  @Post(":sessionId")
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -64,8 +66,9 @@ export class SoutenancesController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreateSoutenancesDto })
-  async create(@Body() doc: CreateSoutenancesDto): Promise<SoutenancesModel> {
-    return await this._service.create(doc);
+  async create(@Body() doc : CreateSoutenancesDto,@Param('sessionId') sessionId : string): Promise<SoutenancesModel> {
+    console.log(doc)
+    return await this._service.create(doc,sessionId);
   }
 
   @Delete(':id')

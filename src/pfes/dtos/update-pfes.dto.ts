@@ -1,5 +1,6 @@
-import { IsAlpha, IsAlphanumeric, IsMongoId, IsNotEmpty } from 'class-validator';
+import { IsAlpha, IsAlphanumeric, IsMongoId, IsNotEmpty, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { SoutenancesModel } from 'src/soutenances/soutenances.model';
 class UpdatePfesDto {
   @IsAlphanumeric()
   @ApiProperty()
@@ -16,9 +17,8 @@ class UpdatePfesDto {
   @IsAlpha()
   @ApiProperty()
   public nomEncadrantEntreprise: string;
-  @IsMongoId()
-  @IsNotEmpty()
-  public soutenanceId: string;
+
+
 
   @IsAlphanumeric()
   @ApiProperty()

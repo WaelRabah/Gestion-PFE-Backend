@@ -1,21 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, SchemaTypes, Types } from 'mongoose';
+import { PfesModel } from 'src/pfes/pfes.model';
+import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 @Schema()
 export class SoutenancesModel extends Document {
-  @Prop({ type: Types.ObjectId, required: true })
-  public encadrantId: string;
+  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  public encadrant: UtilisateursModel;
   @Prop({ type: String, required: true })
-  public heure: string;
-  @Prop({ type: Types.ObjectId, required: true })
-  public presidentId: string;
-  @Prop({ type: Types.ObjectId, required: true })
-  public rapporteurId: string;
-  @Prop({ type: Types.ObjectId, required: true })
-  public studentId: string;
-  @Prop({ type: Types.ObjectId, required: true })
-  public pfeId: string;
-  @Prop({ type: Types.ObjectId, required: true })
-  public sessionId: string;
+  public heure: string; 
+  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  public president: UtilisateursModel;
+  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  public rapporteur: UtilisateursModel;
+  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  public student: UtilisateursModel;
+  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Pfes' })
+  public pfe: PfesModel;
   @Prop({ type: Boolean, required: true })
   public isItPublic: boolean;
   @Prop({ type: Date })

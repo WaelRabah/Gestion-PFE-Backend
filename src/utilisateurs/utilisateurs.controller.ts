@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -19,8 +20,8 @@ import ResetPasswordDTO from './dtos/reset-password.dto';
 import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
 import AjoutEnseignantDTO from './dtos/ajout-enseignant.dto';
 
-@ApiTags('utilisateurs')
-@Controller('utilisateurs')
+@ApiTags('Utilisateurs')
+@Controller('Utilisateurs')
 export class UtilisateursController {
   constructor(private readonly _service: UtilisateursService) {}
 
@@ -57,19 +58,19 @@ export class UtilisateursController {
   async findAll(): Promise<UtilisateursModel[]> {
     return await this._service.getAll();
   }
-
-  @Get(':role')
-  @ApiResponse({ status: 200, description: 'Ok' })
-  async findOnRole(@Param('role') role: string): Promise<UserInfoDTO[]> {
-    return await this._service.getOnRole(role);
-  }
-
   @Get(':id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })
   async findById(@Param('id') id: string): Promise<UtilisateursModel> {
     return await this._service.get(id);
   }
+  @Get('/role')
+  @ApiResponse({ status: 200, description: 'Ok' })
+  async findOnRole(@Query('role') role : string): Promise<UserInfoDTO[]> {
+    return await this._service.getOnRole(role);
+  }
+
+ 
 
   @Post('register')
   @ApiResponse({

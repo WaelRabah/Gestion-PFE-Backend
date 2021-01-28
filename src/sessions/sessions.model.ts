@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Document, Types } from 'mongoose';
+import { Document, SchemaTypes, Types } from 'mongoose';
+import { SoutenancesModel } from 'src/soutenances/soutenances.model';
+import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 @Schema()
 export class SessionsModel extends Document {
   @Prop({ type: Date, required: true })
@@ -9,11 +11,10 @@ export class SessionsModel extends Document {
   public filiere: string;
   @Prop({ type: Number, required: true })
   public numero: number;
-
-  @Prop({ type: String, required: true })
-  public president: string;
-  @Prop({ type: Types.ObjectId, required: true })
-  public presidentId: string;
+  @Prop([{type : SchemaTypes.ObjectId,ref : 'Soutenances'}])
+  public soutenances: SoutenancesModel[];
+  @Prop({ type: SchemaTypes.ObjectId ,ref : 'Utilisateurs' })
+  public president: UtilisateursModel;
   @Prop({ type: Date })
   public deletedAt: Date;
 }

@@ -13,8 +13,13 @@ import { Status } from '../enums/status.enum';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 import SearchPfeSuggestionDTO from './dtos/search-pfe-suggestion.dto';
 import StatusChangeDTO from './dtos/status-change.dto';
+import { Logger } from '@nestjs/common';
+
 @Injectable()
 export class SuggestPfeService implements IBaseService<SuggestPfeModel> {
+  async findAll() : Promise<SuggestPfeModel[]> {
+    return await this._model.find({status:Status.Accepte});
+  }
   constructor(
     @InjectModel('Suggestions') private readonly _model: Model<SuggestPfeModel>,
   ) {}

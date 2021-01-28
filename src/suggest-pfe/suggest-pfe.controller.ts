@@ -30,6 +30,8 @@ import SearchPfeSuggestionDTO from './dtos/search-pfe-suggestion.dto';
 import { createReadStream } from 'fs';
 import StatusChangeDTO from './dtos/status-change.dto';
 import {Response} from 'express';
+import { Logger } from '@nestjs/common';
+
 @ApiTags('suggest-pfe')
 @UseGuards(AuthGuard('jwt'),RolesGuard)
 @Controller('suggest-pfe')
@@ -97,7 +99,7 @@ export class SuggestPfeController {
     return await this._service.changeStatus(id, doc);
   }
 
-  @Roles(Role.Administrateur,Role.Enseignant)
+  @Roles(Role.Administrateur,Role.Enseignant,Role.Etudiant)
   @Get('pdf/:id')
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 200, description: 'got PDF successfully.' })
@@ -122,5 +124,18 @@ export class SuggestPfeController {
     @Body() query: SearchPfeSuggestionDTO
   ) : Promise<SuggestPfeModel[]> {
     return this._service.find(query);
+  }
+
+  
+  @Roles(Role.Etudiant)
+  @Post('allSuggestion')
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiBody({ type: SearchPfeSuggestionDTO })
+  findAllSuggestions(
+    @Body() query: SearchPfeSuggestionDTO
+
+  ) : Promise<SuggestPfeModel[]> {
+    return this._service.findAll();
   }
 }

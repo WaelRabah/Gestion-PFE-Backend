@@ -17,8 +17,6 @@ export class SoutenancesService  {
   constructor(
     @InjectModel('Soutenances')
     private readonly _model: Model<SoutenancesModel>,
-    private readonly _userService: UtilisateursService,
-    private readonly _pfeService: PfesService,
     private readonly _sessService: SessionsService
   ) { }
 
@@ -40,7 +38,7 @@ export class SoutenancesService  {
       const results = await soutenances.map((soutenance) => {
         const result = soutenance
           .populate('president')
-          .populate('encadrant')
+          .populate('enseignantsEncadrants')
           .populate('rapporteur')
           .populate('student')
           .populate('pfe')
@@ -117,10 +115,20 @@ export class SoutenancesService  {
     sessionId: string,
   ): Promise<SoutenancesModel[]> {
     const doc = await this.get(id);
+    const session=await this._sessService.get(sessionId)
+    session.soutenances = session.soutenances.filter(item=>{
+      
+      
+      return !item._id.toString().includes(id)
+    })
+
+    await session.save()
     if (!doc) throw new NotFoundException('Doc not found');
     doc.deletedAt = new Date()
-    await this._model.findByIdAndUpdate(id, doc)
-    return await this._model.find({ deletedAt: undefined, sessionId: sessionId });
+    doc.pfe=null
+    await doc.save()
+   
+    return await this._model.find({ deletedAt: undefined });
   }
   async restore(
     id: string,

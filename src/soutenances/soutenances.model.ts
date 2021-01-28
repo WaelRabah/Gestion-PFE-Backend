@@ -4,19 +4,19 @@ import { PfesModel } from 'src/pfes/pfes.model';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 @Schema()
 export class SoutenancesModel extends Document {
-  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
-  public encadrant: UtilisateursModel;
+  @Prop({type: [{ type: SchemaTypes.ObjectId ,ref : 'Utilisateurs'}]})
+  public enseignantsEncadrants: UtilisateursModel[];
   @Prop({ type: String, required: true })
   public heure: string; 
-  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  @Prop({ type: SchemaTypes.ObjectId,  ref : 'Utilisateurs' })
   public president: UtilisateursModel;
-  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  @Prop({ type: SchemaTypes.ObjectId,  ref : 'Utilisateurs' })
   public rapporteur: UtilisateursModel;
-  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Utilisateurs' })
+  @Prop({ type: SchemaTypes.ObjectId,  ref : 'Utilisateurs' })
   public student: UtilisateursModel;
-  @Prop({ type: SchemaTypes.ObjectId, required: true , ref : 'Pfes' })
+  @Prop({ type: SchemaTypes.ObjectId,  ref : 'Pfes' })
   public pfe: PfesModel;
-  @Prop({ type: Boolean, required: true })
+  @Prop({ type: Boolean })
   public isItPublic: boolean;
   @Prop({ type: Date })
   public deletedAt: Date;

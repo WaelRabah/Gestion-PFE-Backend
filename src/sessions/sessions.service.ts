@@ -52,7 +52,7 @@ export class SessionsService implements IBaseService<SessionsModel> {
     try {
       const sessions = await this._model.find({ deletedAt: undefined })
       const results = sessions.map(async (session)=>{
-        console.log(session)
+  
         const result =await session
         .populate('soutenances')
         .populate('president')
@@ -92,7 +92,6 @@ export class SessionsService implements IBaseService<SessionsModel> {
         
         return result
       })
-      console.log(await Promise.all(results))
       return Promise.all(results);
     } catch (error) {
       throw new BadGatewayException(error);
@@ -130,7 +129,6 @@ export class SessionsService implements IBaseService<SessionsModel> {
       .pfe
       .populate('enseignantsEncadrants')
       .execPopulate()
-      console.log('shiit',item.pfe.enseignantsEncadrants[0])
       return item
       }
     )

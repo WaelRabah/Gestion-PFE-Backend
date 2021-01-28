@@ -55,7 +55,10 @@ export class UtilisateursController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiResponse({ status: 200, description: 'Ok' })
-  async findAll(): Promise<UtilisateursModel[]> {
+  async findAll(@Query('role') role : string): Promise<UtilisateursModel[]> {
+
+    if (role)
+    return await this._service.getOnRole(role);
     return await this._service.getAll();
   }
   @Get(':id')
@@ -64,11 +67,7 @@ export class UtilisateursController {
   async findById(@Param('id') id: string): Promise<UtilisateursModel> {
     return await this._service.get(id);
   }
-  @Get('/role')
-  @ApiResponse({ status: 200, description: 'Ok' })
-  async findOnRole(@Query('role') role : string): Promise<UserInfoDTO[]> {
-    return await this._service.getOnRole(role);
-  }
+
 
  
 

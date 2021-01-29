@@ -26,7 +26,7 @@ class SearchPfeDTO {
   public status: Status;
 
   @IsOptional()
-  public studentId: string;
+  public student;
 }
 
 export default SearchPfeDTO;

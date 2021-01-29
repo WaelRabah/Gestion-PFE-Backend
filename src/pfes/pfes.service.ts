@@ -23,16 +23,22 @@ export class PfesService implements IBaseService<PfesModel> {
   async create(doc: CreatePfesDto, filepath: string, etudiant: UtilisateursModel): Promise<PfesModel> {
 
     try {
-      let sujet: PfesModel = await this._model.findOne({ studentId: etudiant.id });
+      let sujet: PfesModel = await this._model.findOne({ student: etudiant.id });
       if (sujet) {
         if (sujet.status == Status.Refuse) {
-          fs.unlinkSync(sujet.filepath);
-          return await sujet.updateOne({ ...doc, filepath, status: Status.Attente, studentId: etudiant.id });
+          try {
+            fs.unlinkSync(sujet.filepath);
+          }
+          catch(e)
+          {
+
+          }
+          return await sujet.updateOne({ ...doc, filepath, status: Status.Attente, student: etudiant.id });
         }
         else throw new BadRequestException('Votre sujet est en attente ou a été déjà accepté');
       }
       else {
-        sujet = new this._model({ ...doc, filepath, status: Status.Attente, studentId: etudiant.id });
+        sujet = new this._model({ ...doc, filepath, status: Status.Attente, student: etudiant.id });
         return await sujet.save();
 
       }
@@ -131,14 +137,14 @@ export class PfesService implements IBaseService<PfesModel> {
     return pfe.save();
   }
 
-  async canAddRapport(studentId: string): Promise<boolean> {
+  async canAddRapport(student): Promise<boolean> {
     //retoure vrai si l'étudiant a un pfe en cours et n'a pas encore uploadé son rapport
-    return this._model.exists({ studentId, rapportFilepath: { $eq: null } })
+    return this._model.exists({ student, rapportFilepath: { $eq: null }, status: Status.Accepte })
   }
 
-  async cannotAddSujet(studentId: string): Promise<boolean> {
+  async cannotAddSujet(student): Promise<boolean> {
     //retourne vrai si l'étudiant a un sujet en cours ou accepté
-    return this._model.exists({ studentId, status: { $in: [Status.Accepte, Status.Attente] } })
+    return this._model.exists({ student, status: { $in: [Status.Accepte, Status.Attente] } })
   }
 
   async findEncadrementEnseignant(enseignantId: string): Promise<PfesModel[]> {

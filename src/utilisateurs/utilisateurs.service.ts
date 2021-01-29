@@ -76,10 +76,12 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
     }
   }
 
-  async createAll(docs: CreateUtilisateursDto[]) {
+  async createAll(docs: CreateUtilisateursDto[], role) {
     docs.forEach(doc => {
       try {
-      this.create(doc);
+      doc.role = role;
+      doc.username = doc.lastname + doc.firstname;
+      this.createUser(doc);
     } catch (error) {
       console.log('That did not go well.')
     }

@@ -19,6 +19,7 @@ import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
 import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
 import AjoutEnseignantDTO from './dtos/ajout-enseignant.dto';
+import { Role } from './enums/role.enum';
 
 @ApiTags('Utilisateurs')
 @Controller('Utilisateurs')
@@ -83,7 +84,7 @@ export class UtilisateursController {
     return await this._service.create(doc);
   }
 
-  @Post('registerAll')
+  @Post('newEnseignants')
   @ApiResponse({
     status: 201,
     description: 'The recordq have been successfully created.',
@@ -91,8 +92,21 @@ export class UtilisateursController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreateUtilisateursDto })
-  async createAll(@Body() doc: CreateUtilisateursDto[]) {
-    return await this._service.createAll(doc);
+  async createEnseignants(@Body() doc: CreateUtilisateursDto[]) {
+    return await this._service.createAll(doc, Role.Enseignant);
+  }
+
+
+  @Post('newEtudiants')
+  @ApiResponse({
+    status: 201,
+    description: 'The recordq have been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: CreateUtilisateursDto })
+  async createEtudiants(@Body() doc: CreateUtilisateursDto[]) {
+    return await this._service.createAll(doc, Role.Etudiant);
   }
 
   @ApiResponse({

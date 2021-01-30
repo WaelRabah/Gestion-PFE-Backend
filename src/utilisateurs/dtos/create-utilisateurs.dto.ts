@@ -2,7 +2,8 @@ import { IsEmail, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../enums/role.enum';
 class CreateUtilisateursDto {
-  @IsNotEmpty()
+
+  @IsOptional()
   @IsString()
   @ApiProperty()
   public password: string;
@@ -10,7 +11,8 @@ class CreateUtilisateursDto {
     message:
       'role should be one of 3 values : [  Administrateur,Enseignant,Etudiant,]',
   })
-  @IsNotEmpty()
+
+  @IsOptional()
   @ApiProperty()
   public role: Role;
   @IsNotEmpty()

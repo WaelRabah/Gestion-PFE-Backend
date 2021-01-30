@@ -1,6 +1,7 @@
 import {
   BadGatewayException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { IBaseService } from '../base/Ibase.service';
@@ -11,6 +12,7 @@ import UpdateSessionsDto from './dtos/update-sessions.dto';
 import CreateSessionsDto from './dtos/create-sessions.dto';
 import * as pdf from 'pdfkit'
 import * as fs from 'fs';
+import { SoutenancesModel } from 'src/soutenances/soutenances.model';
 
 @Injectable()
 export class SessionsService implements IBaseService<SessionsModel> {
@@ -22,13 +24,36 @@ export class SessionsService implements IBaseService<SessionsModel> {
 
     try{
       const  myDoc = new pdf;
+      const  doc = new pdf;
 
       if(!fs.existsSync(`./uploads/sessions/${id}.pdf`)){
-        myDoc.pipe(fs.createWriteStream(`./uploads/sessions/${id}.pdf`));
-        myDoc.font('Times-Roman');	
-        myDoc.fontSize(30);
-        myDoc.text('hello world' , 50 , 50 );
-        myDoc.end();
+        doc.pipe(fs.createWriteStream(`./uploads/sessions/${id}.pdf`));
+       // doc.font('Times-Roman');	
+        //doc.fontSize(30);
+        let x1=doc.x;
+        let x6=310;
+        let session = await this._model.findById(id);
+        session =await session.populate('soutenances').execPopulate();
+        doc.rect(doc.x, doc.y, 450, 65)
+        .moveTo(300, doc.y).lineTo(300, doc.y+65);
+        for (let soutenance of session.soutenances){
+          soutenance= await soutenance.populate('student').populate('president').execPopulate();
+          doc.text('soutenance: '+ (soutenance.isItPublic?'public':'closed'),x1,doc.y,{indent:5, align:'left'})
+           doc.moveDown(0.2)
+           .text('heure:',x1,doc.y,{indent:5, align:'left'})
+           .moveUp()
+           .text(soutenance.heure,x6,doc.y)
+           .moveDown(0.2)
+           .text("student:",x1,doc.y,{indent:5, align:'left'})
+           .moveUp()
+           .text(soutenance.student.username,x6,doc.y)
+           .moveDown(0.2)
+           .text("president:",x1,doc.y,{indent:5, align:'left'})
+           .moveUp()
+           .text(soutenance.president.username,x6,doc.y)
+           .moveDown(1.5);
+        }
+        doc.end();
       }
       return {
         filename: `${id}.pdf`

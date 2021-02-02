@@ -20,13 +20,14 @@ import ResetPasswordDTO from './dtos/reset-password.dto';
 import AjoutEtudiantDTO from './dtos/ajout-etudiant.dto';
 import AjoutEnseignantDTO from './dtos/ajout-enseignant.dto';
 import { Role } from './enums/role.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('Utilisateurs')
 @Controller('Utilisateurs')
 export class UtilisateursController {
   constructor(private readonly _service: UtilisateursService) {}
 
-
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/newEtudiant')
   @ApiResponse({
     status: 201,
@@ -39,7 +40,7 @@ export class UtilisateursController {
     ){
     return this._service.createUser(doc);
   }
-
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/newEnseignant')
   @ApiResponse({
     status: 201,
@@ -62,6 +63,7 @@ export class UtilisateursController {
     return await this._service.getOnRole(role);
     return await this._service.getAll();
   }
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':id')
   @ApiResponse({ status: 200, description: 'doc retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'doc does not exist' })
@@ -83,7 +85,7 @@ export class UtilisateursController {
   async create(@Body() doc: CreateUtilisateursDto) {
     return await this._service.create(doc);
   }
-
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('newEnseignants')
   @ApiResponse({
     status: 201,
@@ -96,7 +98,7 @@ export class UtilisateursController {
     return await this._service.createAll(doc, Role.Enseignant);
   }
 
-
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('newEtudiants')
   @ApiResponse({
     status: 201,

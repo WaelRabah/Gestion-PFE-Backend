@@ -3,8 +3,9 @@ import * as nodemailer from 'nodemailer';
 export const send = async (to, from, subject, html) => {
   // let testAccount = await nodemailer.createTestAccount();
   let transporter = nodemailer.createTransport({
-    name: 'Gestion-PFE',
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, 
     auth: {
       user: process.env.FROM_EMAIL,
       pass: process.env.PASSWORD,

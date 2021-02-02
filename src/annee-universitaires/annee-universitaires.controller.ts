@@ -6,14 +6,18 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { AnneeUniversitairesModel } from './annee-universitaires.model';
 import { AnneeUniversitairesService } from './annee-universitaires.service';
 import CreateAnneeUniversitairesDto from './dtos/create-annee-universitaires.dto';
 import UpdateAnneeUniversitairesDto from './dtos/update-annee-universitaires.dto';
 @ApiTags('annee-universitaires')
 @Controller('annee-universitaires')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AnneeUniversitairesController {
   constructor(private readonly _service: AnneeUniversitairesService) {}
   @Get()

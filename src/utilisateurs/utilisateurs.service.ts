@@ -7,18 +7,23 @@ import { Model } from 'mongoose';
 import { BadGatewayException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import * as sgMail from '@sendgrid/mail';
 import UpdateUtilisateursDto from './dtos/update-utilisateurs.dto';
 import CreateUtilisateursDto from './dtos/create-utilisateurs.dto';
 import ResetPasswordDTO from './dtos/reset-password.dto';
 import { Role } from './enums/role.enum';
 import { UserInfoDTO } from './dtos/user-info.dto';
-import {send} from '../utils/emailSender'
 @Injectable()
 export class UtilisateursService implements IBaseService<UtilisateursModel> {
   constructor(
     @InjectModel('Utilisateurs')
     private readonly _model: Model<UtilisateursModel>,
   ) {
+    try {
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    } catch (err) {
+      throw new HttpException(err.message, 400);
+    }
   }
 
   async createUser(doc){
@@ -45,7 +50,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
                   <p>email: ${newUser.email}</p>
                   <p>password: ${password}</p>
                   <p>NB: Please change your password </p>`;
-      return await send(to ,from, subject, html );
+      return await sgMail.send({ to, subject, from, html });
     } catch(err){
       console.log(err)
       throw new HttpException(err.message, 400);
@@ -76,9 +81,8 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       try {
       doc.role = role;
       doc.username = doc.lastname + doc.firstname;
-      this.createUser(doc);
+      return this.createUser(doc);
     } catch (error) {
-      console.log('That did not go well.')
     }
     }); } 
 
@@ -122,7 +126,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let html = `<p>Hi ${user.username}</p>
                   <p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
                   <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
-      return await send(to ,from, subject, html )
+      return await sgMail.send({ to, subject, from, html });
     } catch (error) {
       console.log(error)
       throw new HttpException(error.message, 400);
@@ -153,7 +157,7 @@ export class UtilisateursService implements IBaseService<UtilisateursModel> {
       let from = process.env.FROM_EMAIL;
       let html = `<p>Hi ${user.username}</p>
                   <p>This is a confirmation that the password for your account ${user.email} has just been changed.</p>`;
-      return await send(to ,from, subject, html );
+      return await sgMail.send({ to, subject, from, html });
     } catch (error) {
       console.log(error)
       throw new HttpException(error.message, 400);

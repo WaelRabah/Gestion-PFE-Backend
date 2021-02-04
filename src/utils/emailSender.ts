@@ -7,9 +7,10 @@ export const send = async (to, from, subject, html) => {
     port: 465,
     secure: true, 
     auth: {
+      type: 'OAuth2',
       user: process.env.FROM_EMAIL,
-      pass: process.env.PASSWORD,
-    },
+      accessToken: process.env.ACCESS_TOKEN
+  },
   });
   transporter.verify(function(error, success) {
     if (error) {

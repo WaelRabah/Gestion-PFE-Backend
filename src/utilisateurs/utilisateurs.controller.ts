@@ -89,7 +89,7 @@ export class UtilisateursController {
   @Post('newEnseignants')
   @ApiResponse({
     status: 201,
-    description: 'The recordq have been successfully created.',
+    description: 'The records have been successfully created.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })

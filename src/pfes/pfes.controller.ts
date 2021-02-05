@@ -169,4 +169,21 @@ export class PfesController {
     return await this._service.findEncadrementEnseignant(enseignantId)
   }
 
+  @Roles(Role.Etudiant)
+  @Get('rapport/:id')
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 200, description: 'got PDF successfully.' })
+  @Header('Content-Type', 'application/pdf')
+  async getRapport_PDF(
+    @Param('id') id,
+    @Res() res: Response
+  ) {
+    
+    const sujetPFE = await this._service.get(id);
+    //res.setHeader('Content-Disposition',`attachement; filename=${sujetPFE.id}.pdf`)
+    const file = createReadStream(sujetPFE.rapportFilepath);
+    file.pipe(res);
+    return res;
+  }
+
 }

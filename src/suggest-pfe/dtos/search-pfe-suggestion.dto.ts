@@ -24,6 +24,11 @@ class SearchPfeSuggestionDTO {
   @IsOptional()
   @ApiProperty()
   public status: Status;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
+  public enseignant;
 }
 
 export default SearchPfeSuggestionDTO;

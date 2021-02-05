@@ -16,6 +16,8 @@ import SearchPfeDTO from './dtos/search-pfe.dto';
 import StatusChangeDTO from './dtos/status-change.dto';
 import * as fs from 'fs';
 import { SoutenancesService } from 'src/soutenances/soutenances.service';
+import {send} from '../utils/emailSender'
+
 @Injectable()
 export class PfesService implements IBaseService<PfesModel> {
   constructor(@InjectModel('Pfes') private readonly _model: Model<PfesModel>, private readonly _soutenanceService: SoutenancesService) { }
@@ -116,7 +118,15 @@ export class PfesService implements IBaseService<PfesModel> {
   async changeStatus(id: string, newDoc: StatusChangeDTO): Promise<PfesModel> {
     const doc = await this.get(id);
     if (!doc) throw new NotFoundException('Doc not found');
-    return await this._model.findByIdAndUpdate(id, newDoc);
+    const pfe: PfesModel =await (await this._model.findByIdAndUpdate(id, newDoc).populate('student')).execPopulate();
+    if(newDoc.status == Status.Accepte){
+      this.sendMailAccepte(pfe.student);
+      return pfe;
+    }
+    else if (newDoc.status == Status.Refuse) {
+      this.sendMailRefuse(pfe.student);
+      return pfe;
+    }
   }
 
   async find(query: SearchPfeDTO): Promise<PfesModel[]> {
@@ -132,7 +142,7 @@ export class PfesService implements IBaseService<PfesModel> {
   }
 
   async uploadRapport(rapportFilepath: string, etudiant: UtilisateursModel) {
-    const pfe = await this._model.findOne({ studentId: etudiant.id }).exec();
+    const pfe = await this._model.findOne({ student: etudiant.id }).exec();
     pfe.rapportFilepath = rapportFilepath;
     return pfe.save();
   }
@@ -149,6 +159,24 @@ export class PfesService implements IBaseService<PfesModel> {
 
   async findEncadrementEnseignant(enseignantId: string): Promise<PfesModel[]> {
     return this._model.find({ enseignantsEncadrants: { $elemMatch: { $eq: enseignantId } } }).populate('student', 'firstname lastname').exec();
+  }
+
+  async sendMailAccepte(etudiant: UtilisateursModel) {
+    let subject = 'Sujet PFE accepté.';
+    let to = etudiant.email;
+    let from = process.env.FROM_EMAIL;
+    let html = `<p>Bonjour ${etudiant.firstname} ${etudiant.lastname}</p>
+                <p>Félicitations! Votre sujet PFE a été accepté par l'administration</p>`
+    return await send(to ,from, subject, html );
+  }
+
+  async sendMailRefuse(etudiant: UtilisateursModel) {
+    let subject = 'Sujet PFE refusé.';
+    let to = etudiant.email;
+    let from = process.env.FROM_EMAIL;
+    let html = `<p>Bonjour ${etudiant.firstname} ${etudiant.lastname}</p>
+                <p>Votre sujet PFE a été malheureusement refusé par l'administration</p>`
+    return await send(to ,from, subject, html );
   }
 
 }

@@ -27,7 +27,6 @@ export class SessionsService implements IBaseService<SessionsModel> {
       const  myDoc = new pdf;
       const  doc = new pdf;
 
-      if(!fs.existsSync(`./uploads/sessions/${id}.pdf`)){
         doc.pipe(fs.createWriteStream(`./uploads/sessions/${id}.pdf`));
        // doc.font('Times-Roman');	
         //doc.fontSize(30);
@@ -55,10 +54,6 @@ export class SessionsService implements IBaseService<SessionsModel> {
            .moveDown(1.5);
         }
         doc.end();
-      }
-      return {
-        filename: `${id}.pdf`
-      };
     } catch(err) {
       throw new BadGatewayException(err.message);
     }

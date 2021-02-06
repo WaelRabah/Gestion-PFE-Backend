@@ -54,6 +54,9 @@ export class SessionsService implements IBaseService<SessionsModel> {
            .moveDown(1.5);
         }
         doc.end();
+       return {
+        filename: `${id}.pdf`
+      };
     } catch(err) {
       throw new BadGatewayException(err.message);
     }

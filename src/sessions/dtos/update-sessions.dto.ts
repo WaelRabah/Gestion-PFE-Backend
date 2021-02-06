@@ -1,4 +1,4 @@
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UtilisateursModel } from 'src/utilisateurs/utilisateurs.model';
 class UpdateSessionsDto {
@@ -12,6 +12,7 @@ class UpdateSessionsDto {
   @ApiProperty()
   public numero: number;
   @ApiProperty()
+  @IsObject()
   public president: UtilisateursModel;
 }
 

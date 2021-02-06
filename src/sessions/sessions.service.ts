@@ -13,6 +13,7 @@ import CreateSessionsDto from './dtos/create-sessions.dto';
 import * as pdf from 'pdfkit'
 import * as fs from 'fs';
 import { SoutenancesModel } from 'src/soutenances/soutenances.model';
+import { SoutenancesService } from 'src/soutenances/soutenances.service';
 
 @Injectable()
 export class SessionsService implements IBaseService<SessionsModel> {
@@ -76,51 +77,57 @@ export class SessionsService implements IBaseService<SessionsModel> {
   async getAll(): Promise<SessionsModel[]> {
     try {
       const sessions = await this._model.find({ deletedAt: undefined })
-      const results = sessions.map(async (session)=>{
+      if (sessions.length)
+      {
+        const results = sessions.map(async (session)=>{
   
-        const result =await session
-        .populate('soutenances')
-        .populate('president')
-        .execPopulate()
-        
-        result.soutenances = await Promise.all(
-          result
-        .soutenances
-        .map(
-          (item)=>{
-          const res=  item
-            .populate('president')
-            .populate('encadrant')
-            .populate('rapporteur')
-            .populate('student')
-            .populate('pfe')
-            .execPopulate()
-            return res
-          }
-        )
-        )
-        result.soutenances = await Promise.all(
-          result
-        .soutenances
-        .map(
-          async (item)=>{
-          item.pfe = await item
-          .pfe
-          .populate('enseignantsEncadrants')
+          const result =await session
+          .populate('soutenances')
+          .populate('president')
           .execPopulate()
-         
-          return item
-          }
-        )
-        )
-
+          
+          result.soutenances = await Promise.all(
+            result
+          .soutenances
+          .map(
+            (item)=>{
+            const res=  item
+              .populate('president')
+              .populate('rapporteur')
+              .populate('student')
+              .populate('pfe')
+              .populate('enseignantsEncadrants')
+              .execPopulate()
+              return res
+            }
+          )
+          )
+          result.soutenances = await Promise.all(
+            result
+          .soutenances
+          .map(
+            async (item)=>{
+            item.pfe = await item
+            .pfe
+            .populate('enseignantsEncadrants')
+            .execPopulate()
+           
+            return item
+            }
+          )
+          )
         
-        return result
-      })
-      return Promise.all(results);
+  
+          
+          return result
+        })
+        return Promise.all(results);
+
+      }
     } catch (error) {
       throw new BadGatewayException(error);
     }
+    return []
   }
 
   async get(id: string): Promise<SessionsModel> {
@@ -136,7 +143,6 @@ export class SessionsService implements IBaseService<SessionsModel> {
       (item)=>{
       const res=  item
         .populate('president')
-        .populate('encadrant')
         .populate('rapporteur')
         .populate('student')
         .populate('pfe')
@@ -171,7 +177,10 @@ export class SessionsService implements IBaseService<SessionsModel> {
   }
 
   async update(id: string, newDoc: UpdateSessionsDto): Promise<SessionsModel> {
+    
     const doc = await this.get(id);
+
+    console.log(newDoc,doc)
     if (!doc) throw new NotFoundException('Doc not found');
     return await this._model.findByIdAndUpdate(id, newDoc, { new: true });
   }
@@ -179,6 +188,11 @@ export class SessionsService implements IBaseService<SessionsModel> {
     id: string,
   ): Promise<SessionsModel[]> {
     const doc = await this.get(id);
+    doc.soutenances.map(item=>{
+      item.deleteOne(()=>{
+        console.log('Soutenance deleted')
+      })
+    })
     if (!doc) throw new NotFoundException('Doc not found');
     doc.deletedAt = new Date()
     await this._model.findByIdAndUpdate(id, doc)

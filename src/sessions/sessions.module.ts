@@ -1,3 +1,4 @@
+import { SoutenancesModule } from './../soutenances/soutenances.module';
 import { SessionsSchema } from './sessions.model';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
